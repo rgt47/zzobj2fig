@@ -27,6 +27,12 @@ jobs:
         with:
           use-public-rspm: true
 
+      - uses: r-lib/actions/setup-tinytex@v2
+
+      - name: Install LaTeX packages required for vignette pdfcrop pipeline
+        run: tlmgr install pdfcrop xetex booktabs colortbl threeparttable
+        shell: bash
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::pkgdown, local::.

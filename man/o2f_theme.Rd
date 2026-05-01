@@ -10,6 +10,7 @@ o2f_theme(
   header_bold = TRUE,
   header_color = NULL,
   font_size = NULL,
+  font_family = NULL,
   document_class = "article",
   extra_packages = NULL,
   booktabs = TRUE,

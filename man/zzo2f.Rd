@@ -4,24 +4,12 @@
 \alias{zzo2f}
 \title{Typst Backend for Table-to-Figure Conversion}
 \usage{
-zzo2f(
-  x,
-  filename = NULL,
-  sub_dir = get_default_figures_dir(),
-  verbose = FALSE,
-  caption = NULL,
-  align = NULL,
-  theme = NULL,
-  scolor = NULL,
-  footnote = NULL,
-  header_above = NULL,
-  format = c("pdf", "png", "svg"),
-  dpi = 300L,
-  ...
-)
+zzo2f(x, ...)
 }
 \arguments{
 \item{x}{A data frame, matrix, or table object to render.}
+
+\item{...}{Additional arguments passed to \code{tinytable::tt()}.}
 
 \item{filename}{Character string. Base name for output file (without
 extension). Defaults to the deparsed name of \code{x}.}
@@ -51,8 +39,6 @@ NULL. Spanning column headers.}
 or "svg".}
 
 \item{dpi}{Integer. PNG resolution in dots per inch. Default 300.}
-
-\item{...}{Additional arguments passed to \code{tinytable::tt()}.}
 }
 \value{
 Invisibly returns the path to the output file.

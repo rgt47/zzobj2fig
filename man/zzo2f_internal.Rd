@@ -17,6 +17,10 @@ zzo2f_internal(
   header_above,
   format,
   dpi,
+  separator_row = NULL,
+  formats = NULL,
+  collapse_rows = NULL,
+  compile = TRUE,
   ...
 )
 }

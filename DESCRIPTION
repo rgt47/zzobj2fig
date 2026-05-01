@@ -1,0 +1,49 @@
+Package: zzobj2fig
+Title: Generate LaTeX Tables and PDF Outputs
+Version: 0.3.0
+Date: 2026-02-12
+Authors@R:
+    person("RG", "Thomas", , "rgthomas@ucsd.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-1686-4965"))
+Description: A package to create LaTeX tables from dataframes and
+    statistical objects with optional styling and generate cropped PDF
+    figures. Supports multiple output formats, themes for journal styling
+    (APA, Nature, NEJM), S3 methods for lm/glm objects, and R Markdown
+    integration via custom knitr engine.
+License: GPL (>= 3)
+URL: https://github.com/rgt47/zzobj2fig
+BugReports: https://github.com/rgt47/zzobj2fig/issues
+Imports:
+    kableExtra,
+    here,
+    mgcv,
+    pander,
+    randomForest,
+    renv,
+Suggests:
+    broom,
+    broom.mixed,
+    digest,
+    dplyr,
+    future.apply,
+    knitr,
+    lme4,
+    MASS,
+    nlme,
+    nnet,
+    palmerpenguins,
+    rmarkdown,
+    rms,
+    stringr,
+    survival,
+    tinytest,
+    tinytable,
+    tinytex
+SystemRequirements: LaTeX, pdflatex, pdfcrop,
+    imagemagick convert command (optional for PNG output),
+    pdf2svg (optional for SVG output),
+    Typst CLI (optional, for zzo2f)
+Encoding: UTF-8
+VignetteBuilder: knitr
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3

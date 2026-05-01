@@ -1,0 +1,39 @@
+url: https://rgt47.github.io/zzobj2fig/
+
+template:
+  bootstrap: 5
+  bslib:
+    primary: '#0054AD'
+
+home:
+  title: zzobj2fig
+  description: >
+    Generate publication-quality LaTeX tables and cropped PDF outputs
+    from data frames and statistical objects.
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github]
+  components:
+    intro:
+      text: Get started
+      href: articles/quickstart.html
+    articles:
+      text: Articles
+      menu:
+        - text: Quick start
+          href: articles/quickstart.html
+        - text: Object types and themes
+          href: articles/object-types-and-themes.html
+        - text: Advanced features
+          href: articles/advanced-features.html
+        - text: Comparison with pander
+          href: articles/pander-vs-zzobj2fig-challenges.html
+
+authors:
+  RG Thomas:
+    href: https://profiles.ucsd.edu/ronald.thomas
+
+development:
+  mode: auto

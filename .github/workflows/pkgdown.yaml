@@ -29,8 +29,14 @@ jobs:
 
       - uses: r-lib/actions/setup-tinytex@v2
 
-      - name: Install LaTeX packages required for vignette pdfcrop pipeline
-        run: tlmgr install pdfcrop xetex booktabs colortbl threeparttable
+      - name: Install LaTeX packages required for vignette compile pipeline
+        run: |
+          tlmgr install \
+            pdfcrop xetex \
+            booktabs longtable array multirow wrapfig float colortbl \
+            pdflscape tabu threeparttable threeparttablex ulem makecell \
+            xcolor caption siunitx adjustbox microtype environ \
+            varwidth fancyvrb framed
         shell: bash
 
       - uses: r-lib/actions/setup-r-dependencies@v2

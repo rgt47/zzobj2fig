@@ -89,7 +89,8 @@ zzo2f_inline <- function(x,
 #' knitr engine for Typst-rendered tables
 #'
 #' @description Used by \code{register_zzo2f_engine()} to handle
-#'   chunks of the form \code{```{zzo2f, zzo2f.caption="...", ...}}.
+#'   chunks declared with engine \code{zzo2f}
+#'   (e.g. \verb{zzo2f, zzo2f.caption="...", ...}).
 #'   Chunk body should evaluate to a data frame.
 #'
 #' @param options knitr chunk options.

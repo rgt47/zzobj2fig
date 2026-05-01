@@ -32,11 +32,11 @@ jobs:
       - name: Install LaTeX packages required for vignette compile pipeline
         run: |
           tlmgr install \
-            pdfcrop xetex \
-            booktabs longtable array multirow wrapfig float colortbl \
-            pdflscape tabu threeparttable threeparttablex ulem makecell \
+            pdfcrop \
+            booktabs multirow wrapfig colortbl pdflscape \
+            tabu threeparttable threeparttablex ulem makecell \
             xcolor caption siunitx adjustbox microtype environ \
-            varwidth fancyvrb framed
+            varwidth
         shell: bash
 
       - uses: r-lib/actions/setup-r-dependencies@v2

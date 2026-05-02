@@ -1,4 +1,4 @@
-# zzobj2fig
+# zzobj2fig <a href="https://rgt47.github.io/zzobj2fig/"><img src="man/figures/logo.png" align="right" height="138" alt="zzobj2fig hex sticker" /></a>
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/zzobj2fig)](https://CRAN.R-project.org/package=zzobj2fig)

@@ -1,9 +1,28 @@
-# zzcollab r-package.yml v2.4.0
+# zzcollab r-package.yml v2.5.0 (tiered model)
 #
-# R CMD check in a rocker/tidyverse container, triggered on
-# pushes and PRs to main/master.
+# Three independent jobs implementing the verification tiers
+# described in zzcollab/docs/ci-strategy-tiered-model.md:
 #
-name: R Package Check (Container)
+#   validate : Tier 1 -- environment integrity
+#              renv::restore + status + zzrenvcheck audit
+#              Runs on every push.
+#
+#   check    : Tier 2 -- code correctness
+#              R CMD check via rcmdcheck
+#              Runs on every push and PR.
+#
+#   render   : Tier 3 -- end-to-end reproduction
+#              rmarkdown::render or quarto render
+#              Conditional on analysis/report/report.Rmd or
+#              index.qmd existing in the repo.
+#
+# NOTE: All jobs invoke renv::restore. Until renv.lock is updated to
+# pin Repositories.URL to a date-stamped Posit binary URL with the
+# correct OS segment, restore will source-build all packages and may
+# fail intermittently. See ci-strategy-tiered-model.md sections 5
+# and 8 for the recommended lockfile change.
+
+name: R Package Check (Tiered)
 
 on:
   push:
@@ -12,26 +31,27 @@ on:
     branches: [ main, master ]
 
 jobs:
-  check:
+
+  # =============================================================
+  # Tier 1: Environment Integrity
+  # =============================================================
+  validate:
     runs-on: ubuntu-latest
     container: rocker/tidyverse:4.4.2
     env:
-      ZZCOLLAB_CONTAINER: "true"
-      CI_TOOLS_LIB: "/tmp/ci-tools"
+      ZZCOLLAB_CONTAINER: 'true'
+      ZZCOLLAB_AUTO_RESTORE: 'false'
+      CI_TOOLS_LIB: '/tmp/ci-tools'
 
     steps:
       - uses: actions/checkout@v4
 
-      # C libraries required by R packages that link against
-      # libcurl (httr), openssl (git2r), and libxml2 (xml2).
       - name: Install system dependencies
         run: |
           apt-get update && apt-get install -y \
-            jq libcurl4-openssl-dev libssl-dev libxml2-dev cmake
+            jq libcurl4-openssl-dev libssl-dev libxml2-dev cmake \
+            curl ca-certificates
 
-      # Persist the renv global package store across runs.
-      # Key is the renv.lock hash; stale caches serve as
-      # partial restores to avoid full recompilation.
       - name: Cache renv packages
         uses: actions/cache@v4
         with:
@@ -40,31 +60,151 @@ jobs:
           restore-keys: |
             renv-
 
-      # Install renv from CRAN, then restore all packages
-      # pinned in renv.lock into the project-local library.
-      - name: Install renv and restore project packages
+      - name: Install renv and restore project library
         run: |
           Rscript -e "\
             install.packages('renv', repos = 'https://cloud.r-project.org'); \
             renv::restore(prompt = FALSE)"
 
-      # rcmdcheck lives in a throwaway library so it does not
-      # pollute the renv project library or conflict with
-      # renv-managed package versions.
+      - name: Lockfile vs source consistency
+        run: |
+          Rscript -e "\
+            status <- renv::status(); \
+            invisible(status)"
+
+      - name: zzrenvcheck audit (if available)
+        run: |
+          Rscript -e "\
+            if (requireNamespace('zzrenvcheck', quietly = TRUE)) { \
+              zzrenvcheck::check_packages() \
+            } else { \
+              cat('zzrenvcheck not installed; skipping audit.\n') \
+            }"
+
+  # =============================================================
+  # Tier 2: Code Correctness
+  # =============================================================
+  check:
+    runs-on: ubuntu-latest
+    container: rocker/tidyverse:4.4.2
+    env:
+      ZZCOLLAB_CONTAINER: 'true'
+      ZZCOLLAB_AUTO_RESTORE: 'false'
+      CI_TOOLS_LIB: '/tmp/ci-tools'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          apt-get update && apt-get install -y \
+            jq libcurl4-openssl-dev libssl-dev libxml2-dev cmake \
+            curl ca-certificates
+
+      - name: Cache renv packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/R/renv
+          key: renv-${{ hashFiles('renv.lock') }}
+          restore-keys: |
+            renv-
+
+      - name: Install renv and restore project library
+        run: |
+          Rscript -e "\
+            install.packages('renv', repos = 'https://cloud.r-project.org'); \
+            renv::restore(prompt = FALSE)"
+
       - name: Install CI tools to separate library
         run: |
           mkdir -p $CI_TOOLS_LIB
           Rscript -e "\
-            install.packages(c('rcmdcheck', 'tinytest'),
-              lib = Sys.getenv('CI_TOOLS_LIB'),
+            install.packages(c('rcmdcheck', 'tinytest'), \
+              lib = Sys.getenv('CI_TOOLS_LIB'), \
               repos = 'https://cloud.r-project.org')"
 
-      # Full R CMD check (skipping PDF manual build).
-      # This also runs the tinytest suite via the standard
-      # tests/ entry point. Fails the workflow on any ERROR.
       - name: Run R CMD check
         run: |
           Rscript -e "\
             .libPaths(c(Sys.getenv('CI_TOOLS_LIB'), .libPaths())); \
-            rcmdcheck::rcmdcheck(
+            rcmdcheck::rcmdcheck( \
               args = '--no-manual', error_on = 'error')"
+
+  # =============================================================
+  # Tier 3: End-to-End Reproduction
+  # =============================================================
+  # Detects analysis/report/report.Rmd or index.qmd and renders.
+  # The job is always defined; the render step is gated on file
+  # existence so the job becomes a no-op for projects without a
+  # report file (such as zzobj2fig at the time of writing).
+  render:
+    runs-on: ubuntu-latest
+    container: rocker/tidyverse:4.4.2
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    env:
+      ZZCOLLAB_CONTAINER: 'true'
+      ZZCOLLAB_AUTO_RESTORE: 'false'
+      CI_TOOLS_LIB: '/tmp/ci-tools'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect report file
+        id: detect
+        run: |
+          if [ -f analysis/report/report.Rmd ]; then
+            echo "report=analysis/report/report.Rmd" >> $GITHUB_OUTPUT
+            echo "engine=rmarkdown" >> $GITHUB_OUTPUT
+          elif [ -f index.qmd ]; then
+            echo "report=index.qmd" >> $GITHUB_OUTPUT
+            echo "engine=quarto" >> $GITHUB_OUTPUT
+          else
+            echo "report=" >> $GITHUB_OUTPUT
+            echo "No report file found; render job will skip."
+          fi
+
+      - name: Install system dependencies
+        if: steps.detect.outputs.report != ''
+        run: |
+          apt-get update && apt-get install -y \
+            jq libcurl4-openssl-dev libssl-dev libxml2-dev cmake \
+            curl ca-certificates pandoc
+
+      - name: Cache renv packages
+        if: steps.detect.outputs.report != ''
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/R/renv
+          key: renv-${{ hashFiles('renv.lock') }}
+          restore-keys: |
+            renv-
+
+      - name: Install renv and restore project library
+        if: steps.detect.outputs.report != ''
+        run: |
+          Rscript -e "\
+            install.packages('renv', repos = 'https://cloud.r-project.org'); \
+            renv::restore(prompt = FALSE)"
+
+      - name: Render with rmarkdown
+        if: steps.detect.outputs.engine == 'rmarkdown'
+        run: |
+          Rscript -e "\
+            rmarkdown::render('${{ steps.detect.outputs.report }}')"
+
+      - name: Render with quarto
+        if: steps.detect.outputs.engine == 'quarto'
+        uses: quarto-dev/quarto-actions/render@v2
+        with:
+          path: ${{ steps.detect.outputs.report }}
+
+      - name: Upload rendered output
+        if: steps.detect.outputs.report != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: rendered-report
+          path: |
+            analysis/report/report.html
+            analysis/report/report.pdf
+            _site/
+          if-no-files-found: ignore

@@ -68,17 +68,17 @@ expected <- c("col\\_\\_1", "col\\_2", "col\\_3")
 expect_equal(sanitize_column_names(test_names), expected)
 
 # sanitize_filename
-expect_equal(sanitize_filename("file#1"), "file_1")
-expect_equal(sanitize_filename("file%2"), "file_2")
-expect_equal(sanitize_filename("file&3"), "file_3")
+expect_equal(zzobj2fig:::sanitize_filename("file#1"), "file_1")
+expect_equal(zzobj2fig:::sanitize_filename("file%2"), "file_2")
+expect_equal(zzobj2fig:::sanitize_filename("file&3"), "file_3")
 
 
 # --- log_message ---
 
-expect_message(log_message("test message", verbose = TRUE))
+expect_message(zzobj2fig:::log_message("test message", verbose = TRUE))
 
 msgs <- capture.output(
-  log_message("test message", verbose = FALSE),
+  zzobj2fig:::log_message("test message", verbose = FALSE),
   type = "message"
 )
 expect_equal(length(msgs), 0L)

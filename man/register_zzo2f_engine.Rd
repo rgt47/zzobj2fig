@@ -10,5 +10,7 @@ register_zzo2f_engine()
 NULL (invisible).
 }
 \description{
-
+Registers the \code{zzo2f} chunk engine with knitr so that
+\verb{```\{zzo2f, ...\}} blocks render via the Typst backend.
+Normally called automatically in \code{.onLoad()}.
 }

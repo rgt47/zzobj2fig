@@ -28,7 +28,10 @@ o2f_theme(
 \item{header_color}{LaTeX color for header background. NULL for no
 background.}
 
-\item{font_size}{LaTeX font size command (e.g., "footnotesize", "small").
+\item{font_size}{LaTeX font size command (e.g., "footnotesize", "small").}
+
+\item{font_family}{Optional LaTeX font family name. NULL keeps the
+document's default font.
 NULL for default size.}
 
 \item{document_class}{LaTeX document class. Defaults to "article".}

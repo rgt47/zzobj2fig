@@ -1,12 +1,10 @@
 #' Typst Figure-Inclusion Helpers
 #'
-#' @description Emit Typst source fragments that embed a rendered
-#'   table image (typically from a prior \code{zzo2f()} call) into a
-#'   surrounding \code{.typ} document. Parallel in purpose to the
-#'   \code{o2f_include*} family but using Typst primitives
-#'   (\code{#figure}, \code{#image}, \code{#grid}, \code{#place}).
+#' Emit Typst source fragments that embed a rendered table image
+#' (typically from a prior `zzo2f()` call) into a surrounding `.typ`
+#' document. Parallel in purpose to the `o2f_include*` family but
+#' using Typst primitives (`#figure`, `#image`, `#grid`, `#place`).
 #'
-#' @details
 #' Three semantic gaps between the LaTeX and Typst inclusion models
 #' are flagged here:
 #' \itemize{

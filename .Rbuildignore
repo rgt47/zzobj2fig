@@ -37,3 +37,15 @@
 
 # Claude Code
 ^\.claude$
+
+# Vignette build artifacts (re-rendered each build)
+^vignettes/.*\.html$
+^vignettes/.*\.pdf$
+^vignettes/.*\.aux$
+^vignettes/.*\.tex$
+^vignettes/.*\.log$
+^vignettes/.*_files$
+^vignettes/basic_output$
+^vignettes/color_demo$
+^vignettes/output$
+^vignettes/tables$

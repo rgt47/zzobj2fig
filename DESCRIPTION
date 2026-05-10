@@ -14,24 +14,23 @@ License: GPL (>= 3)
 URL: https://github.com/rgt47/zzobj2fig
 BugReports: https://github.com/rgt47/zzobj2fig/issues
 Imports:
-    kableExtra,
-    here,
-    mgcv,
-    pander,
-    randomForest,
-    renv,
+    kableExtra
 Suggests:
     broom,
     broom.mixed,
     digest,
     dplyr,
     future.apply,
+    here,
     knitr,
     lme4,
     MASS,
+    mgcv,
     nlme,
     nnet,
     palmerpenguins,
+    pander,
+    randomForest,
     rmarkdown,
     rms,
     stringr,

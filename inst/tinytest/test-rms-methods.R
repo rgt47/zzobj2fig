@@ -36,12 +36,16 @@ library(rms)
 
 # --- Non-LaTeX tests ---
 
-# extract_rms_coefs returns correct structure
-dd <- datadist(mtcars)
+# extract_rms_coefs returns correct structure.
+# rms::Design resolves the datadist option via the calling frame,
+# so the dataset must live in a stable environment that survives
+# the test-file scope. Use .GlobalEnv and clean up on exit.
+assign("dd", datadist(mtcars), envir = .GlobalEnv)
 options(datadist = "dd")
+on.exit(rm("dd", envir = .GlobalEnv), add = TRUE)
 
 model <- ols(mpg ~ wt + cyl, data = mtcars)
-result <- extract_rms_coefs(model, digits = 3)
+result <- zzobj2fig:::extract_rms_coefs(model, digits = 3)
 expect_inherits(result, "data.frame")
 expect_true("Term" %in% names(result))
 expect_true("Estimate" %in% names(result))
@@ -50,14 +54,14 @@ expect_true("p value" %in% names(result))
 
 # extract_rms_coefs handles exponentiation
 model <- lrm(am ~ mpg, data = mtcars)
-result_raw <- extract_rms_coefs(model, exponentiate = FALSE)
-result_exp <- extract_rms_coefs(model, exponentiate = TRUE)
+result_raw <- zzobj2fig:::extract_rms_coefs(model, exponentiate = FALSE)
+result_exp <- zzobj2fig:::extract_rms_coefs(model, exponentiate = TRUE)
 expect_true("Estimate" %in% names(result_raw))
 expect_true("OR" %in% names(result_exp))
 
 # extract_rms_anova returns correct structure
 model <- ols(mpg ~ rcs(wt, 4) + cyl, data = mtcars)
-result <- extract_rms_anova(model, digits = 3)
+result <- zzobj2fig:::extract_rms_anova(model, digits = 3)
 expect_inherits(result, "data.frame")
 expect_true("Term" %in% names(result) || ncol(result) > 0)
 

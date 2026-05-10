@@ -90,7 +90,7 @@ extract_rms_coefs <- function(x, digits = 3, conf.int = TRUE,
 extract_rms_anova <- function(x, digits = 3) {
   check_rms()
 
-  a <- rms::anova.rms(x)
+  a <- stats::anova(x)
   result <- as.data.frame(a)
 
   result <- cbind(Term = rownames(result), result)

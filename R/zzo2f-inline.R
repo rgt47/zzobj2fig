@@ -175,9 +175,9 @@ zzo2f_engine <- function(options) {
 
 #' Register the zzo2f knitr engine
 #'
-#' @description Registers the \code{zzo2f} chunk engine with knitr so
-#'   that \code{```{zzo2f, ...}``` blocks render via the Typst
-#'   backend. Normally called automatically in \code{.onLoad()}.
+#' Registers the `zzo2f` chunk engine with knitr so that
+#' `` ```{zzo2f, ...} `` blocks render via the Typst backend.
+#' Normally called automatically in `.onLoad()`.
 #'
 #' @return NULL (invisible).
 #' @export

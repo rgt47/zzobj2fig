@@ -36,7 +36,7 @@ df <- data.frame(
   b = c("x", "y"),
   c = c(3.4567, 4.5678)
 )
-result <- round_numeric_cols(df, 2)
+result <- zzobj2fig:::round_numeric_cols(df, 2)
 expect_equal(result$a, c(1.23, 2.35))
 expect_equal(result$b, c("x", "y"))
 expect_equal(result$c, c(3.46, 4.57))

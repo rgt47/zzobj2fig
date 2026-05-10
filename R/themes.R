@@ -24,6 +24,8 @@ NULL
 #' @param header_color LaTeX color for header background. NULL for no
 #'   background.
 #' @param font_size LaTeX font size command (e.g., "footnotesize", "small").
+#' @param font_family Optional LaTeX font family name. NULL keeps the
+#'   document's default font.
 #'   NULL for default size.
 #' @param document_class LaTeX document class. Defaults to "article".
 #' @param extra_packages List of additional LaTeX package specifications.

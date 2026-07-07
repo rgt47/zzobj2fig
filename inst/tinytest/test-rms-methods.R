@@ -37,12 +37,12 @@ library(rms)
 # --- Non-LaTeX tests ---
 
 # extract_rms_coefs returns correct structure.
-# rms::Design resolves the datadist option via the calling frame,
-# so the dataset must live in a stable environment that survives
-# the test-file scope. Use .GlobalEnv and clean up on exit.
-assign("dd", datadist(mtcars), envir = .GlobalEnv)
-options(datadist = "dd")
-on.exit(rm("dd", envir = .GlobalEnv), add = TRUE)
+# Pass the datadist object directly to options() (not as a character
+# name) so rms::Design() finds it without frame-depth lookup -- the
+# named-string approach fails under tinytest's lapply/eval call chain
+# (rms >= 8.x).
+options(datadist = datadist(mtcars))
+on.exit(options(datadist = NULL), add = TRUE)
 
 model <- ols(mpg ~ wt + cyl, data = mtcars)
 result <- zzobj2fig:::extract_rms_coefs(model, digits = 3)
@@ -76,8 +76,7 @@ if (!requireNamespace("rms", quietly = TRUE)) {
 if (!has_latex()) exit_file("pdflatex not available")
 
 output_dir <- tempdir()
-dd <- datadist(mtcars)
-options(datadist = "dd")
+options(datadist = datadist(mtcars))
 
 # o2f.ols
 model <- ols(mpg ~ wt + cyl, data = mtcars)
@@ -117,8 +116,7 @@ expect_true(file.exists(result2))
 if (requireNamespace("survival", quietly = TRUE)) {
   library(survival)
 
-  dd_lung <- datadist(lung)
-  options(datadist = "dd_lung")
+  options(datadist = datadist(lung))
 
   model <- cph(Surv(time, status) ~ age + sex, data = lung)
   result <- o2f(
@@ -155,7 +153,7 @@ if (requireNamespace("survival", quietly = TRUE)) {
   )
   expect_true(file.exists(result))
 
-  options(datadist = "dd")
+  options(datadist = datadist(mtcars))
 }
 
 # o2f.orm

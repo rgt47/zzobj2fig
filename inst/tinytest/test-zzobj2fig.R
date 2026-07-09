@@ -65,7 +65,7 @@ expect_error(o2f(test_df, sub_dir = ""), "Directory name cannot be empty")
 # sanitize_column_names
 test_names <- c("col #1", "col%2", "col&3")
 expected <- c("col\\_\\_1", "col\\_2", "col\\_3")
-expect_equal(sanitize_column_names(test_names), expected)
+expect_equal(zzobj2fig:::sanitize_column_names(test_names), expected)
 
 # sanitize_filename
 expect_equal(zzobj2fig:::sanitize_filename("file#1"), "file_1")
@@ -112,7 +112,7 @@ expect_true(any(grepl("setmainfont\\{Times New Roman\\}", result)))
 
 # sanitize_table_cells
 test_cells <- c("100%", "Cost $50", "R&D", "Item #1")
-result <- sanitize_table_cells(test_cells)
+result <- zzobj2fig:::sanitize_table_cells(test_cells)
 expect_true(all(grepl("\\\\%", result[1])))
 expect_true(all(grepl("\\\\\\$", result[2])))
 expect_true(all(grepl("\\\\&", result[3])))

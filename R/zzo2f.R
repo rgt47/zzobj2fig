@@ -451,15 +451,6 @@ zzo2f_internal <- function(x,
                            compile = TRUE,
                            ...) {
   require_package("tinytable", "the zzo2f() Typst backend")
-  if (isTRUE(compile) && !command_exists("typst")) {
-    stop(
-      "Typst CLI not found on PATH.\n",
-      "Install from: https://github.com/typst/typst/releases\n",
-      "  macOS:  brew install typst\n",
-      "  Linux:  curl -fsSL https://typst.community | sh",
-      call. = FALSE
-    )
-  }
 
   # --- Validate inputs ---
   assert_single_logical(verbose, "verbose")
@@ -525,6 +516,17 @@ zzo2f_internal <- function(x,
         call. = FALSE
       )
     }
+  }
+
+  # --- Typst CLI check (after all input validation) ---
+  if (isTRUE(compile) && !command_exists("typst")) {
+    stop(
+      "Typst CLI not found on PATH.\n",
+      "Install from: https://github.com/typst/typst/releases\n",
+      "  macOS:  brew install typst\n",
+      "  Linux:  curl -fsSL https://typst.community | sh",
+      call. = FALSE
+    )
   }
 
   # --- Resolve theme ---

@@ -1,0 +1,823 @@
+# zzobj2fig
+
+## Overview
+
+**zzobj2fig** is an R package for creating LaTeX tables from data frames
+and statistical objects, generating cropped PDF outputs suitable for
+direct inclusion in publications. The package provides journal-specific
+themes (APA, Nature, NEJM), S3 methods for common statistical objects,
+and R Markdown integration.
+
+## Installation
+
+### From GitHub
+
+``` r
+
+# install.packages("pak")
+pak::pak("rgt47/zzobj2fig")
+```
+
+### From Local Source
+
+If you have cloned the repository locally:
+
+``` r
+
+# Using pak (preferred)
+pak::local_install()
+
+# Or using devtools
+devtools::install()
+```
+
+From the command line:
+
+``` bash
+R CMD INSTALL .
+```
+
+### System Requirements
+
+- R \>= 4.0
+- LaTeX distribution (TeX Live, MiKTeX, TinyTeX, or MacTeX)
+- `pdflatex` and `pdfcrop` executables
+- Optional: ImageMagick (for PNG output), pdf2svg (for SVG output)
+
+Check your setup:
+
+``` r
+
+library(zzobj2fig)
+check_latex_deps()
+```
+
+## Quick Start
+
+``` r
+
+library(zzobj2fig)
+
+# Basic usage: data frame to cropped PDF
+o2f(mtcars[1:6, 1:4], filename = "my_table")
+
+# With journal theme
+o2f(mtcars[1:6, 1:4], theme = "nejm", filename = "nejm_table")
+
+# Statistical objects (lm, glm, anova, etc.)
+model <- lm(mpg ~ cyl + hp + wt, data = mtcars)
+o2f(model, filename = "regression_table")
+
+# Model comparison
+m1 <- lm(mpg ~ cyl, data = mtcars)
+m2 <- lm(mpg ~ cyl + hp, data = mtcars)
+o2f_regression(Model1 = m1, Model2 = m2, stars = TRUE)
+```
+
+Output files generated:
+
+- `my_table.tex` - LaTeX source
+- `my_table.pdf` - Full PDF
+- `my_table_cropped.pdf` - Cropped PDF for document inclusion
+
+## Key Features
+
+### Journal Themes
+
+Built-in themes for common publication styles:
+
+``` r
+
+o2f(data, theme = "nejm")     # New England Journal of Medicine
+o2f(data, theme = "apa")      # American Psychological Association
+o2f(data, theme = "nature")   # Nature journals
+o2f(data, theme = "minimal")  # Clean, minimal style
+
+# Set global theme
+o2f_theme_set("nejm")
+```
+
+### Statistical Object Support
+
+Direct conversion of statistical objects to formatted tables:
+
+| Object Type | Method |
+|:---|:---|
+| `data.frame` | [`o2f.data.frame()`](https://rgt47.github.io/zzobj2fig/reference/o2f.default.md) |
+| `matrix` | [`o2f.matrix()`](https://rgt47.github.io/zzobj2fig/reference/o2f.matrix.md) |
+| `lm` | [`o2f.lm()`](https://rgt47.github.io/zzobj2fig/reference/o2f.lm.md) |
+| `glm` | [`o2f.glm()`](https://rgt47.github.io/zzobj2fig/reference/o2f.glm.md) |
+| `anova` / `aov` | [`o2f.anova()`](https://rgt47.github.io/zzobj2fig/reference/o2f.anova.md) / [`o2f.aov()`](https://rgt47.github.io/zzobj2fig/reference/o2f.anova.md) |
+| `htest` | [`o2f.htest()`](https://rgt47.github.io/zzobj2fig/reference/o2f.htest.md) |
+
+**RMS package support** (biostatistics/clinical trials):
+
+| Object Type | Method | Description |
+|:---|:---|:---|
+| `ols` | [`o2f.ols()`](https://rgt47.github.io/zzobj2fig/reference/o2f.ols.md) | Ordinary least squares |
+| `lrm` | [`o2f.lrm()`](https://rgt47.github.io/zzobj2fig/reference/o2f.lrm.md) | Logistic regression (OR support) |
+| `cph` | [`o2f.cph()`](https://rgt47.github.io/zzobj2fig/reference/o2f.cph.md) | Cox proportional hazards (HR support) |
+| `orm` | [`o2f.orm()`](https://rgt47.github.io/zzobj2fig/reference/o2f.orm.md) | Ordinal regression |
+| `Glm` | `o2f.Glm()` | Generalized linear models |
+| `psm` | [`o2f.psm()`](https://rgt47.github.io/zzobj2fig/reference/o2f.psm.md) | Parametric survival models |
+
+Additional types via broom integration: `coxph`, `survreg`, `nls`,
+`polr`, `prcomp`, `kmeans`, `lmerMod`, `glmerMod`, `lme`, `Arima`.
+
+**Any broom-supported object** works via
+[`o2f_tidy()`](https://rgt47.github.io/zzobj2fig/reference/o2f_tidy.md):
+
+``` r
+
+o2f_tidy(any_broom_object, filename = "result")
+```
+
+### R Markdown Integration
+
+Inline tables without LaTeX float positioning issues:
+
+``` r
+
+# In R Markdown
+o2f_inline(model, width = "3in", caption = "Model Results")
+
+# Quick coefficient table
+o2f_coef(model, caption = "Coefficients")
+```
+
+### Decimal Alignment
+
+Use siunitx for decimal-aligned numeric columns:
+
+``` r
+
+o2f(df, align = list("l", o2f_siunitx(table_format = "3.3")))
+```
+
+### Multi-Page Tables
+
+For large tables spanning multiple pages:
+
+``` r
+
+o2f(large_data, longtable = TRUE, caption = "Complete Dataset")
+```
+
+## Function Reference
+
+| Function | Purpose |
+|:---|:---|
+| [`o2f()`](https://rgt47.github.io/zzobj2fig/reference/o2f.md) | Convert object to PDF table |
+| [`o2f_inline()`](https://rgt47.github.io/zzobj2fig/reference/o2f_inline.md) | Inline tables for R Markdown |
+| [`o2f_coef()`](https://rgt47.github.io/zzobj2fig/reference/o2f_coef.md) | Quick coefficient tables |
+| [`o2f_regression()`](https://rgt47.github.io/zzobj2fig/reference/o2f_regression.md) | Compare regression models |
+| [`o2f_rms_compare()`](https://rgt47.github.io/zzobj2fig/reference/o2f_rms_compare.md) | Compare rms models |
+| [`o2f_tidy()`](https://rgt47.github.io/zzobj2fig/reference/o2f_tidy.md) | Any broom-supported object |
+| [`o2f_theme_set()`](https://rgt47.github.io/zzobj2fig/reference/o2f_theme_set.md) | Set global theme |
+| [`o2f_theme_get()`](https://rgt47.github.io/zzobj2fig/reference/o2f_theme_get.md) | Get current theme |
+| [`check_latex_deps()`](https://rgt47.github.io/zzobj2fig/reference/check_latex_deps.md) | Check LaTeX dependencies |
+| [`ensure_pdfcrop()`](https://rgt47.github.io/zzobj2fig/reference/ensure_pdfcrop.md) | Install pdfcrop via TinyTeX |
+
+## Key Parameters
+
+| Parameter     | Description                | Default     |
+|:--------------|:---------------------------|:------------|
+| `caption`     | LaTeX table caption        | NULL        |
+| `label`       | LaTeX label for cross-refs | NULL        |
+| `align`       | Column alignment (l/c/r)   | NULL (auto) |
+| `longtable`   | Multi-page table support   | FALSE       |
+| `crop`        | Crop PDF margins           | TRUE        |
+| `crop_margin` | Margin size (pts)          | 10          |
+| `theme`       | Theme name or object       | NULL        |
+
+## Why zzobj2fig vs. flextable?
+
+Both packages export tables as standalone PDF files, but serve different
+use cases:
+
+### Choose zzobj2fig when you want:
+
+- **LaTeX-native approach**: Creates actual LaTeX code using `pdflatex`
+  and `pdfcrop` for professional LaTeX typography
+- **Minimal interface**: Single function
+  [`o2f()`](https://rgt47.github.io/zzobj2fig/reference/o2f.md) with
+  minimal parameters
+- **LaTeX ecosystem integration**: Generated `.tex` files can be
+  manually edited and work within existing LaTeX workflows
+- **kableExtra styling**: Uses familiar kableExtra formatting
+- **Focused scope**: Minimal dependencies focused on one specific task
+
+### Choose flextable when you want:
+
+- **Multi-format output**: Tables for Word, PowerPoint, HTML, and PDF
+- **Mixed content**: Combine text and images within table cells
+- **Extensive formatting**: More styling options and conditional
+  formatting
+- **R graphics system**: Uses R’s native graphics system rather than
+  external LaTeX tools
+
+## Documentation
+
+- [`vignette("quickstart")`](https://rgt47.github.io/zzobj2fig/articles/quickstart.md) -
+  Quick start guide
+- [`vignette("object-types-and-themes")`](https://rgt47.github.io/zzobj2fig/articles/object-types-and-themes.md) -
+  Supported objects and themes
+- [`vignette("advanced-features")`](https://rgt47.github.io/zzobj2fig/articles/advanced-features.md) -
+  Advanced customization
+
+## Development with Docker
+
+This package uses Docker for reproducible development. All LaTeX
+dependencies and R packages are pre-configured in the container.
+
+### Prerequisites
+
+- Docker Desktop (or Docker Engine on Linux)
+- GNU Make
+
+### Building the Docker Image
+
+Build the image from the project root:
+
+``` bash
+# Standard build
+make docker-build
+
+# Rebuild without cache (force fresh build)
+make docker-rebuild
+
+# Build with verbose output (for debugging)
+make docker-build-log
+```
+
+### Development Workflow
+
+Start an interactive R session inside the container:
+
+``` bash
+make r
+```
+
+This command:
+
+1.  Validates package dependencies before starting
+2.  Launches a bash terminal with R, vim, and all tools available
+3.  Mounts the project directory at `/home/rstudio/project`
+4.  Validates dependencies again on exit (captures new packages)
+
+For RStudio Server instead of terminal:
+
+``` bash
+make rstudio
+```
+
+Then open <http://localhost:8787> (username: `rstudio`, password:
+`rstudio`).
+
+### Running Package Tasks in Docker
+
+``` bash
+# Run tests
+make docker-test
+
+# Build vignettes
+make docker-vignettes
+
+# Full R CMD check
+make docker-check
+
+# Generate documentation
+make docker-document
+```
+
+### Installing New Packages
+
+Inside the container:
+
+``` r
+
+renv::install("newpackage")
+```
+
+On exit, `make r` automatically runs validation to update `renv.lock`.
+
+### Available Make Targets
+
+Run `make help` to see all available targets:
+
+    Main workflow:
+      r                     - Start bash terminal (vim editing)
+      rstudio               - Start RStudio Server on http://localhost:8787
+
+    Docker utilities:
+      docker-build          - Build image from current renv.lock
+      docker-rebuild        - Rebuild image without cache
+      docker-test           - Run tests in container
+      docker-check          - Full R CMD check in container
+      docker-vignettes      - Build vignettes in container
+
+    Cleanup:
+      docker-clean          - Remove Docker image
+      docker-prune-cache    - Remove Docker build cache
+
+## License
+
+GPL (\>= 3)
+
+## Author
+
+RG Thomas (<rgthomas@ucsd.edu>)
+
+# Package index
+
+## All functions
+
+- [`advanced-features`](https://rgt47.github.io/zzobj2fig/reference/advanced-features.md)
+  : Advanced Table Features for zzobj2fig
+
+- [`babel()`](https://rgt47.github.io/zzobj2fig/reference/babel.md) :
+  Create a babel package specification for language support
+
+- [`batch`](https://rgt47.github.io/zzobj2fig/reference/batch.md) :
+  Batch Processing API
+
+- [`broom-methods`](https://rgt47.github.io/zzobj2fig/reference/broom-methods.md)
+  : Broom-Based S3 Methods for Extended Object Support
+
+- [`caching`](https://rgt47.github.io/zzobj2fig/reference/caching.md) :
+  Caching Layer for o2f
+
+- [`check_latex_deps()`](https://rgt47.github.io/zzobj2fig/reference/check_latex_deps.md)
+  : Check LaTeX dependencies for zzobj2fig
+
+- [`check_typst_deps()`](https://rgt47.github.io/zzobj2fig/reference/check_typst_deps.md)
+  : Check Typst dependencies for zzo2f
+
+- [`compile_latex()`](https://rgt47.github.io/zzobj2fig/reference/compile_latex.md)
+  : Compile a LaTeX file to PDF
+
+- [`convert_pdf_to_png()`](https://rgt47.github.io/zzobj2fig/reference/convert_pdf_to_png.md)
+  : Convert PDF to PNG
+
+- [`convert_pdf_to_svg()`](https://rgt47.github.io/zzobj2fig/reference/convert_pdf_to_svg.md)
+  : Convert PDF to SVG
+
+- [`create_latex_template()`](https://rgt47.github.io/zzobj2fig/reference/create_latex_template.md)
+  : Create LaTeX document template with specified packages
+
+- [`crop_pdf()`](https://rgt47.github.io/zzobj2fig/reference/crop_pdf.md)
+  : Crop a PDF file
+
+- [`ensure_pdfcrop()`](https://rgt47.github.io/zzobj2fig/reference/ensure_pdfcrop.md)
+  : Ensure pdfcrop is available
+
+- [`ensure_pdflatex()`](https://rgt47.github.io/zzobj2fig/reference/ensure_pdflatex.md)
+  : Ensure pdflatex is available
+
+- [`fontspec()`](https://rgt47.github.io/zzobj2fig/reference/fontspec.md)
+  : Create fontspec package specification for custom fonts
+
+- [`formatting`](https://rgt47.github.io/zzobj2fig/reference/formatting.md)
+  : Cell-Level Formatting Utilities
+
+- [`geometry()`](https://rgt47.github.io/zzobj2fig/reference/geometry.md)
+  : Create a geometry package specification
+
+- [`knitr-engine`](https://rgt47.github.io/zzobj2fig/reference/knitr-engine.md)
+  : knitr Engine Integration
+
+- [`latex-include`](https://rgt47.github.io/zzobj2fig/reference/latex-include.md)
+  : LaTeX Figure Inclusion Helpers
+
+- [`o2f(`*`<Arima>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.Arima.md)
+  : o2f method for ARIMA models
+
+- [`o2f()`](https://rgt47.github.io/zzobj2fig/reference/o2f.md) :
+  Convert objects to LaTeX tables
+
+- [`o2f(`*`<anova>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.anova.md)
+  [`o2f(`*`<aov>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.anova.md)
+  : o2f method for ANOVA objects
+
+- [`o2f(`*`<coxph>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.coxph.md)
+  : o2f method for Cox proportional hazards models
+
+- [`o2f(`*`<cph>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.cph.md)
+  : o2f method for rms Cox proportional hazards models
+
+- [`o2f(`*`<default>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.default.md)
+  [`o2f(`*`<data.frame>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.default.md)
+  : Default method for o2f (data frames)
+
+- [`o2f(`*`<glm>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.glm.md)
+  : o2f method for generalized linear models
+
+- [`o2f(`*`<glmerMod>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.glmerMod.md)
+  : o2f method for lme4 generalized linear mixed models
+
+- [`o2f(`*`<htest>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.htest.md)
+  : o2f method for hypothesis tests
+
+- [`o2f(`*`<kmeans>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.kmeans.md)
+  : o2f method for k-means clustering
+
+- [`o2f(`*`<lm>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.lm.md)
+  : o2f method for linear models
+
+- [`o2f(`*`<lme>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.lme.md)
+  : o2f method for nlme linear mixed models
+
+- [`o2f(`*`<lmerMod>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.lmerMod.md)
+  : o2f method for lme4 linear mixed models
+
+- [`o2f(`*`<lrm>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.lrm.md)
+  : o2f method for rms logistic regression models
+
+- [`o2f(`*`<matrix>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.matrix.md)
+  : o2f method for matrix
+
+- [`o2f(`*`<multinom>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.multinom.md)
+  : o2f method for multinomial logistic regression
+
+- [`o2f(`*`<nls>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.nls.md)
+  : o2f method for nonlinear least squares models
+
+- [`o2f(`*`<ols>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.ols.md)
+  : o2f method for rms ordinary least squares models
+
+- [`o2f(`*`<orm>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.orm.md)
+  : o2f method for rms ordinal regression models
+
+- [`o2f(`*`<polr>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.polr.md)
+  : o2f method for ordinal logistic regression (polr)
+
+- [`o2f(`*`<prcomp>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.prcomp.md)
+  : o2f method for principal component analysis
+
+- [`o2f(`*`<psm>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.psm.md)
+  : o2f method for rms parametric survival models
+
+- [`o2f(`*`<survdiff>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.survdiff.md)
+  : o2f method for survdiff (survival difference tests)
+
+- [`o2f(`*`<survfit>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.survfit.md)
+  : o2f method for survfit (survival curves)
+
+- [`o2f(`*`<survreg>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.survreg.md)
+  : o2f method for survreg (parametric survival models)
+
+- [`o2f(`*`<table>`*`)`](https://rgt47.github.io/zzobj2fig/reference/o2f.table.md)
+  : o2f method for table
+
+- [`o2f_batch()`](https://rgt47.github.io/zzobj2fig/reference/o2f_batch.md)
+  : Process multiple tables in batch
+
+- [`o2f_batch_advanced()`](https://rgt47.github.io/zzobj2fig/reference/o2f_batch_advanced.md)
+  : Advanced batch processing with per-table options
+
+- [`o2f_batch_spec()`](https://rgt47.github.io/zzobj2fig/reference/o2f_batch_spec.md)
+  : Create a batch specification
+
+- [`o2f_bold_col()`](https://rgt47.github.io/zzobj2fig/reference/o2f_bold_col.md)
+  : Bold specific columns
+
+- [`o2f_cache_clear()`](https://rgt47.github.io/zzobj2fig/reference/o2f_cache_clear.md)
+  : Clear the o2f cache
+
+- [`o2f_cache_dir()`](https://rgt47.github.io/zzobj2fig/reference/o2f_cache_dir.md)
+  : Get the cache directory
+
+- [`o2f_cache_info()`](https://rgt47.github.io/zzobj2fig/reference/o2f_cache_info.md)
+  : Get cache statistics
+
+- [`o2f_cache_set_dir()`](https://rgt47.github.io/zzobj2fig/reference/o2f_cache_set_dir.md)
+  : Set the cache directory
+
+- [`o2f_coef()`](https://rgt47.github.io/zzobj2fig/reference/o2f_coef.md)
+  : Quick coefficient table from model
+
+- [`o2f_collapse_rows()`](https://rgt47.github.io/zzobj2fig/reference/o2f_collapse_rows.md)
+  : Create collapse rows specification
+
+- [`o2f_color_row()`](https://rgt47.github.io/zzobj2fig/reference/o2f_color_row.md)
+  : Color specific rows
+
+- [`o2f_decimal()`](https://rgt47.github.io/zzobj2fig/reference/o2f_decimal.md)
+  : Create decimal-aligned column specification (convenience wrapper)
+
+- [`o2f_footnote()`](https://rgt47.github.io/zzobj2fig/reference/o2f_footnote.md)
+  : Create table footnotes
+
+- [`o2f_format()`](https://rgt47.github.io/zzobj2fig/reference/o2f_format.md)
+  : Create a formatting specification
+
+- [`o2f_header_above()`](https://rgt47.github.io/zzobj2fig/reference/o2f_header_above.md)
+  : Create spanning header specification
+
+- [`o2f_highlight()`](https://rgt47.github.io/zzobj2fig/reference/o2f_highlight.md)
+  : Highlight cells based on a condition
+
+- [`o2f_include()`](https://rgt47.github.io/zzobj2fig/reference/o2f_include.md)
+  : Include a o2f table as a LaTeX figure
+
+- [`o2f_include_inline()`](https://rgt47.github.io/zzobj2fig/reference/o2f_include_inline.md)
+  : Include a o2f table inline (no float)
+
+- [`o2f_include_margin()`](https://rgt47.github.io/zzobj2fig/reference/o2f_include_margin.md)
+  : Include a o2f table in the margin
+
+- [`o2f_include_sidebyside()`](https://rgt47.github.io/zzobj2fig/reference/o2f_include_sidebyside.md)
+  : Include side-by-side o2f tables
+
+- [`o2f_include_wrap()`](https://rgt47.github.io/zzobj2fig/reference/o2f_include_wrap.md)
+  : Include a o2f table in a wraptable environment
+
+- [`o2f_inline()`](https://rgt47.github.io/zzobj2fig/reference/o2f_inline.md)
+  : Inline Table for R Markdown Documents
+
+- [`o2f_italic_col()`](https://rgt47.github.io/zzobj2fig/reference/o2f_italic_col.md)
+  : Italicize specific columns
+
+- [`o2f_list_themes()`](https://rgt47.github.io/zzobj2fig/reference/o2f_list_themes.md)
+  : List available themes
+
+- [`o2f_margin_packages()`](https://rgt47.github.io/zzobj2fig/reference/o2f_margin_packages.md)
+  : Get required LaTeX packages for margin methods
+
+- [`o2f_mark()`](https://rgt47.github.io/zzobj2fig/reference/o2f_mark.md)
+  : Create footnote marker for table cells
+
+- [`o2f_output_formats()`](https://rgt47.github.io/zzobj2fig/reference/o2f_output_formats.md)
+  : List available output formats
+
+- [`o2f_ref()`](https://rgt47.github.io/zzobj2fig/reference/o2f_ref.md)
+  : Generate LaTeX for referencing a table
+
+- [`o2f_regression()`](https://rgt47.github.io/zzobj2fig/reference/o2f_regression.md)
+  : Create side-by-side regression comparison table
+
+- [`o2f_rms_compare()`](https://rgt47.github.io/zzobj2fig/reference/o2f_rms_compare.md)
+  : Create side-by-side comparison table for rms models
+
+- [`o2f_siunitx()`](https://rgt47.github.io/zzobj2fig/reference/o2f_siunitx.md)
+  : Create siunitx column specification for decimal alignment
+
+- [`o2f_theme()`](https://rgt47.github.io/zzobj2fig/reference/o2f_theme.md)
+  : Create a o2f theme
+
+- [`o2f_theme_apa()`](https://rgt47.github.io/zzobj2fig/reference/o2f_theme_apa.md)
+  : APA theme
+
+- [`o2f_theme_clear()`](https://rgt47.github.io/zzobj2fig/reference/o2f_theme_clear.md)
+  : Clear all custom themes
+
+- [`o2f_theme_get()`](https://rgt47.github.io/zzobj2fig/reference/o2f_theme_get.md)
+  : Get the current global o2f theme
+
+- [`o2f_theme_lancet()`](https://rgt47.github.io/zzobj2fig/reference/o2f_theme_lancet.md)
+  : Lancet theme
+
+- [`o2f_theme_minimal()`](https://rgt47.github.io/zzobj2fig/reference/o2f_theme_minimal.md)
+  : Minimal theme
+
+- [`o2f_theme_nature()`](https://rgt47.github.io/zzobj2fig/reference/o2f_theme_nature.md)
+  : Nature theme
+
+- [`o2f_theme_nejm()`](https://rgt47.github.io/zzobj2fig/reference/o2f_theme_nejm.md)
+  : NEJM theme
+
+- [`o2f_theme_register()`](https://rgt47.github.io/zzobj2fig/reference/o2f_theme_register.md)
+  : Register a custom theme
+
+- [`o2f_theme_set()`](https://rgt47.github.io/zzobj2fig/reference/o2f_theme_set.md)
+  : Set the global o2f theme
+
+- [`o2f_theme_unregister()`](https://rgt47.github.io/zzobj2fig/reference/o2f_theme_unregister.md)
+  : Unregister a custom theme
+
+- [`o2f_tidy()`](https://rgt47.github.io/zzobj2fig/reference/o2f_tidy.md)
+  : Convert any broom-supported object to a LaTeX table
+
+- [`output-formats`](https://rgt47.github.io/zzobj2fig/reference/output-formats.md)
+  : Output Format Handlers
+
+- [`print(`*`<o2f_collapse>`*`)`](https://rgt47.github.io/zzobj2fig/reference/print.o2f_collapse.md)
+  : Print method for o2f_collapse objects
+
+- [`print(`*`<o2f_footnote>`*`)`](https://rgt47.github.io/zzobj2fig/reference/print.o2f_footnote.md)
+  : Print method for o2f_footnote objects
+
+- [`print(`*`<o2f_format>`*`)`](https://rgt47.github.io/zzobj2fig/reference/print.o2f_format.md)
+  : Print method for o2f_format objects
+
+- [`print(`*`<o2f_header>`*`)`](https://rgt47.github.io/zzobj2fig/reference/print.o2f_header.md)
+  : Print method for o2f_header objects
+
+- [`print(`*`<o2f_siunitx>`*`)`](https://rgt47.github.io/zzobj2fig/reference/print.o2f_siunitx.md)
+  : Print method for o2f_siunitx objects
+
+- [`print(`*`<o2f_theme>`*`)`](https://rgt47.github.io/zzobj2fig/reference/print.o2f_theme.md)
+  : Print method for o2f_theme objects
+
+- [`print(`*`<zzo2f_batch_spec>`*`)`](https://rgt47.github.io/zzobj2fig/reference/print.zzo2f_batch_spec.md)
+  : Print method for zzo2f_batch_spec
+
+- [`print(`*`<zzo2f_collapse>`*`)`](https://rgt47.github.io/zzobj2fig/reference/print.zzo2f_collapse.md)
+  : Print method for zzo2f_collapse
+
+- [`print(`*`<zzo2f_format>`*`)`](https://rgt47.github.io/zzobj2fig/reference/print.zzo2f_format.md)
+  : Print method for zzo2f_format
+
+- [`print(`*`<zzo2f_siunitx>`*`)`](https://rgt47.github.io/zzobj2fig/reference/print.zzo2f_siunitx.md)
+  : Print method for zzo2f_siunitx
+
+- [`register_o2f_engine()`](https://rgt47.github.io/zzobj2fig/reference/register_o2f_engine.md)
+  : Register the o2f knitr engine
+
+- [`register_zzo2f_engine()`](https://rgt47.github.io/zzobj2fig/reference/register_zzo2f_engine.md)
+  : Register the zzo2f knitr engine
+
+- [`rms-methods`](https://rgt47.github.io/zzobj2fig/reference/rms-methods.md)
+  : RMS Package S3 Methods
+
+- [`s3-methods`](https://rgt47.github.io/zzobj2fig/reference/s3-methods.md)
+  : S3 Methods for Statistical Objects
+
+- [`sanitize_column_names()`](https://rgt47.github.io/zzobj2fig/reference/sanitize_column_names.md)
+  : Sanitize column names to be valid in both R and LaTeX
+
+- [`sanitize_table_cells()`](https://rgt47.github.io/zzobj2fig/reference/sanitize_table_cells.md)
+  : Sanitize table cells to be LaTeX-safe
+
+- [`themes`](https://rgt47.github.io/zzobj2fig/reference/themes.md) :
+  Theme System for zzobj2fig
+
+- [`zzo2f-batch`](https://rgt47.github.io/zzobj2fig/reference/zzo2f-batch.md)
+  : Batch Processing for the Typst Backend
+
+- [`zzo2f-formatting`](https://rgt47.github.io/zzobj2fig/reference/zzo2f-formatting.md)
+  : Cell-Level Formatting Specifications for zzo2f
+
+- [`zzo2f-include`](https://rgt47.github.io/zzobj2fig/reference/zzo2f-include.md)
+  : Typst Figure-Inclusion Helpers
+
+- [`zzo2f-inline`](https://rgt47.github.io/zzobj2fig/reference/zzo2f-inline.md)
+  : Inline Rendering and knitr Engine for the Typst Backend
+
+- [`zzo2f-preamble`](https://rgt47.github.io/zzobj2fig/reference/zzo2f-preamble.md)
+  : Preamble Emitters for the Typst Backend
+
+- [`zzo2f-refs`](https://rgt47.github.io/zzobj2fig/reference/zzo2f-refs.md)
+  : References and Notes for zzo2f Tables
+
+- [`zzo2f-siunitx`](https://rgt47.github.io/zzobj2fig/reference/zzo2f-siunitx.md)
+  : Numeric Alignment for the Typst Backend
+
+- [`zzo2f-stat`](https://rgt47.github.io/zzobj2fig/reference/zzo2f-stat.md)
+  : Statistical-Object Helpers for the Typst Backend
+
+- [`zzo2f-structure`](https://rgt47.github.io/zzobj2fig/reference/zzo2f-structure.md)
+  : Structural Specifications for zzo2f Tables
+
+- [`zzo2f()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f.md) :
+  Typst Backend for Table-to-Figure Conversion
+
+- [`zzo2f(`*`<anova>`*`)`](https://rgt47.github.io/zzobj2fig/reference/zzo2f.anova.md)
+  [`zzo2f(`*`<aov>`*`)`](https://rgt47.github.io/zzobj2fig/reference/zzo2f.anova.md)
+  : zzo2f method for ANOVA objects
+
+- [`zzo2f(`*`<default>`*`)`](https://rgt47.github.io/zzobj2fig/reference/zzo2f.default.md)
+  [`zzo2f(`*`<data.frame>`*`)`](https://rgt47.github.io/zzobj2fig/reference/zzo2f.default.md)
+  [`zzo2f(`*`<matrix>`*`)`](https://rgt47.github.io/zzobj2fig/reference/zzo2f.default.md)
+  [`zzo2f(`*`<table>`*`)`](https://rgt47.github.io/zzobj2fig/reference/zzo2f.default.md)
+  : Default method for zzo2f (data frames)
+
+- [`zzo2f(`*`<glm>`*`)`](https://rgt47.github.io/zzobj2fig/reference/zzo2f.glm.md)
+  : zzo2f method for generalized linear models
+
+- [`zzo2f(`*`<htest>`*`)`](https://rgt47.github.io/zzobj2fig/reference/zzo2f.htest.md)
+  : zzo2f method for hypothesis tests
+
+- [`zzo2f(`*`<lm>`*`)`](https://rgt47.github.io/zzobj2fig/reference/zzo2f.lm.md)
+  : zzo2f method for linear models
+
+- [`zzo2f_batch()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_batch.md)
+  : Batch-render tables with the Typst backend
+
+- [`zzo2f_batch_advanced()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_batch_advanced.md)
+  : Advanced batch rendering with per-table overrides
+
+- [`zzo2f_batch_spec()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_batch_spec.md)
+  : Spec constructor for zzo2f advanced batch processing
+
+- [`zzo2f_bold_col()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_bold_col.md)
+  : Bold specific columns (Typst backend)
+
+- [`zzo2f_coef()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_coef.md)
+  : Coefficient table rendered inline with the Typst backend
+
+- [`zzo2f_collapse_rows()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_collapse_rows.md)
+  : Collapse repeated values in columns (Typst backend)
+
+- [`zzo2f_color_row()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_color_row.md)
+  : Apply background color to rows (Typst backend)
+
+- [`zzo2f_compile()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_compile.md)
+  : Compile Typst source to an image file
+
+- [`zzo2f_decimal()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_decimal.md)
+  : Decimal-place formatting for numeric columns (Typst backend)
+
+- [`zzo2f_font()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_font.md)
+  :
+
+  Font directive for Typst (parallel to
+  [`fontspec()`](https://rgt47.github.io/zzobj2fig/reference/fontspec.md))
+
+- [`zzo2f_footnote()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_footnote.md)
+  : Table footnotes (Typst backend)
+
+- [`zzo2f_format()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_format.md)
+  : Create a Typst formatting specification
+
+- [`zzo2f_header_above()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_header_above.md)
+  : Spanning column headers (Typst backend)
+
+- [`zzo2f_highlight()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_highlight.md)
+  : Highlight cells by condition (Typst backend)
+
+- [`zzo2f_include()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_include.md)
+  : Include a rendered table as a Typst figure
+
+- [`zzo2f_include_inline()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_include_inline.md)
+  : Include a rendered table inline (no figure wrapper)
+
+- [`zzo2f_include_margin()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_include_margin.md)
+  : Include a rendered table in the page margin (approximation)
+
+- [`zzo2f_include_sidebyside()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_include_sidebyside.md)
+  : Include two rendered tables side by side
+
+- [`zzo2f_include_wrap()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_include_wrap.md)
+  : Include a rendered table with text flowing around it (approximation)
+
+- [`zzo2f_inline()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_inline.md)
+  : Render a table inline for R Markdown / Quarto (Typst backend)
+
+- [`zzo2f_italic_col()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_italic_col.md)
+  : Italicize specific columns (Typst backend)
+
+- [`zzo2f_margin_packages()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_margin_packages.md)
+  : Margin-figure preamble packages (Typst: none required)
+
+- [`zzo2f_mark()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_mark.md)
+  : Footnote marker for Typst cell content
+
+- [`zzo2f_page()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_page.md)
+  :
+
+  Page directive for Typst (parallel to
+  [`geometry()`](https://rgt47.github.io/zzobj2fig/reference/geometry.md))
+
+- [`zzo2f_ref()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_ref.md)
+  : Cross-reference to a labeled table (Typst backend)
+
+- [`zzo2f_regression()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_regression.md)
+  : Side-by-side regression comparison table (Typst backend)
+
+- [`zzo2f_rms_compare()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_rms_compare.md)
+  : Side-by-side RMS regression comparison (Typst backend)
+
+- [`zzo2f_siunitx()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_siunitx.md)
+  :
+
+  Build a Typst `siunitx`-analog specification
+
+- [`zzo2f_textlang()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_textlang.md)
+  :
+
+  Language directive for Typst (parallel to
+  [`babel()`](https://rgt47.github.io/zzobj2fig/reference/babel.md))
+
+- [`zzo2f_tidy()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f_tidy.md)
+  : Tidy a model object and render with the Typst backend
+
+- [`zzz`](https://rgt47.github.io/zzobj2fig/reference/zzz.md) : Package
+  Initialization
+
+# Articles
+
+### All vignettes
+
+- [Advanced Features:
+  zzobj2fig](https://rgt47.github.io/zzobj2fig/articles/advanced-features.md):
+- [Working with Different Object Types and
+  Themes](https://rgt47.github.io/zzobj2fig/articles/object-types-and-themes.md):
+- [Why zzobj2fig? A Practical Comparison with
+  pander](https://rgt47.github.io/zzobj2fig/articles/pander-vs-zzobj2fig-challenges.md):
+- [Quickstart Guide: zzo2f (Typst
+  Backend)](https://rgt47.github.io/zzobj2fig/articles/quickstart_zzo2f.md):
+- [Quickstart Guide: zzobj2fig
+  v0.2.1](https://rgt47.github.io/zzobj2fig/articles/quickstart.md):
+- [Creating LaTeX Tables and Cropped PDFs from
+  Dataframes](https://rgt47.github.io/zzobj2fig/articles/zzobj2fig.md):

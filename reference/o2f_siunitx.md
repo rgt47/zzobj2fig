@@ -1,0 +1,66 @@
+# Create siunitx column specification for decimal alignment
+
+Generate a siunitx S column specification for decimal-aligned numeric
+columns. This provides proper alignment on the decimal point.
+
+## Usage
+
+``` r
+o2f_siunitx(
+  table_format = "3.2",
+  round_mode = c("none", "places", "figures"),
+  round_precision = NULL,
+  detect_weight = TRUE,
+  group_separator = NULL
+)
+```
+
+## Arguments
+
+- table_format:
+
+  Format string for siunitx table-format option. Specifies the number of
+  integer and decimal places (e.g., "3.2" for up to 999.99).
+
+- round_mode:
+
+  Rounding mode: "places", "figures", or "none".
+
+- round_precision:
+
+  Number of decimal places or significant figures.
+
+- detect_weight:
+
+  Logical. Detect and preserve bold text.
+
+- group_separator:
+
+  Thousands separator (e.g., "," or " ").
+
+## Value
+
+A o2f_siunitx object containing the column specification and required
+LaTeX packages.
+
+## Details
+
+The siunitx package provides sophisticated number formatting including
+decimal alignment. This function creates a custom column type that can
+be used in the align parameter.
+
+Note: When using siunitx columns, non-numeric content (like header text)
+must be wrapped in braces `{text}`.
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Create decimal-aligned column spec
+dec_align <- o2f_siunitx(table_format = "2.3")
+
+# Apply to specific columns using align parameter
+o2f(df, align = c("l", dec_align, dec_align, "r"),
+    extra_packages = attr(dec_align, "packages"))
+} # }
+```

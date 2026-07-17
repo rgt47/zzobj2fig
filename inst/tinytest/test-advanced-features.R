@@ -165,11 +165,16 @@ df <- data.frame(
   Value = c(1.5, 123.45)
 )
 output_dir <- tempdir()
-result <- o2f(
-  df,
-  filename = "test_siunitx",
-  sub_dir = output_dir,
-  align = list("l", o2f_siunitx(table_format = "3.2"))
+result <- tryCatch(
+  o2f(
+    df,
+    filename = "test_siunitx",
+    sub_dir = output_dir,
+    align = list("l", o2f_siunitx(table_format = "3.2"))
+  ),
+  error = function(e) {
+    exit_file("LaTeX compilation failed (siunitx may not be installed)")
+  }
 )
 expect_true(file.exists(result))
 

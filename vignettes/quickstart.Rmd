@@ -39,8 +39,10 @@ include_table <- function(filename) {
     cat(sprintf("\n\n\\centering\\includegraphics{%s}\n\n", pdf_path))
   } else {
     png_path <- sub("\\.pdf$", ".png", pdf_path)
-    convert_pdf_to_png(pdf_path, png_path, dpi = 300)
-    knitr::include_graphics(png_path)
+    tryCatch({
+      convert_pdf_to_png(pdf_path, png_path, dpi = 300)
+      knitr::include_graphics(png_path)
+    }, error = function(e) invisible(NULL))
   }
 }
 

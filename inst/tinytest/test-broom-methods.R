@@ -27,6 +27,12 @@ has_latex <- function() {
   result == 0
 }
 
+has_pdfcrop <- function() {
+  system("pdfcrop -version",
+    ignore.stdout = TRUE, ignore.stderr = TRUE
+  ) == 0
+}
+
 
 # --- Non-LaTeX tests ---
 
@@ -49,7 +55,7 @@ if (!requireNamespace("broom", quietly = TRUE)) {
 
 # --- LaTeX-dependent tests ---
 
-if (!has_latex()) exit_file("pdflatex not available")
+if (!has_latex() || !has_pdfcrop()) exit_file("pdflatex or pdfcrop not available")
 
 output_dir <- tempdir()
 

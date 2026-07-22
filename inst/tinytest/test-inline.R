@@ -27,7 +27,13 @@ has_latex <- function() {
   result == 0
 }
 
-if (!has_latex()) exit_file("pdflatex not available")
+has_pdfcrop <- function() {
+  system("pdfcrop -version",
+    ignore.stdout = TRUE, ignore.stderr = TRUE
+  ) == 0
+}
+
+if (!has_latex() || !has_pdfcrop()) exit_file("pdflatex or pdfcrop not available")
 
 output_dir <- tempdir()
 

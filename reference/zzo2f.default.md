@@ -86,10 +86,31 @@ zzo2f(x, ...)
 
   PNG resolution.
 
+- separator_row:
+
+  Integer vector or NULL. 1-based data rows above which a horizontal
+  separator line is drawn.
+
+- formats:
+
+  A single `zzo2f_format`, a list of them, or NULL. Column formatting
+  specifications.
+
+- collapse_rows:
+
+  A o2f_collapse object or NULL, for multi-row cells.
+
+- compile:
+
+  Logical. Compile the generated Typst source to the output format. When
+  FALSE, the Typst source is returned instead of a file path. Default
+  TRUE.
+
 - ...:
 
   Additional arguments passed to tinytable::tt().
 
 ## Value
 
-Invisibly returns the path to the output file.
+Invisibly returns the path to the output file, or the Typst source when
+`compile = FALSE`.

@@ -56,10 +56,19 @@ using Typst primitives (<code>#figure</code>, <code>#image</code>, <code>#grid</
 
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-
-
-
-    </div>
+    <p>Three semantic gaps between the LaTeX and Typst inclusion models
+are flagged here:</p><ul><li><p><code>wrapfigure</code> (text wrapping around a figure) has no
+direct Typst equivalent. <code><a href="zzo2f_include_wrap.html">zzo2f_include_wrap()</a></code> emits a
+<code>#place(..., float: true)</code> approximation; text does not
+literally wrap.</p></li>
+<li><p><code>marginfigure</code> / <code>\marginpar</code> are approximated
+via <code>#place(right, dx: 100%, ...)</code>. This works inside a
+<code>#set page(margin: (right: ...))</code> block; users must
+arrange the page layout themselves.</p></li>
+<li><p>LaTeX float placement specifiers (<code>htbp</code>) have no
+clean Typst analog. The <code>position</code> argument is accepted
+for API symmetry but ignored.</p></li>
+</ul></div>
 
   </main></div>
 

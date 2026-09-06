@@ -50,6 +50,19 @@ zzo2f_regression(
 
   Output directory.
 
+- format:
+
+  Character string. Output format: "pdf" (default), "png", or "svg".
+
+- theme:
+
+  Character string, o2f_theme object, or NULL. Theme name (e.g., "nejm",
+  "apa") or custom theme.
+
+- caption:
+
+  Character string or NULL. Table caption.
+
 - zzo2f_args:
 
   List of additional arguments passed to zzo2f().

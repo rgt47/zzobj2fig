@@ -37,6 +37,11 @@ zzo2f_include_margin(
 
   Width spec.
 
+- offset:
+
+  Character. Typst length for horizontal offset; use `"100%"` to push
+  into a reserved right margin. Default `"100%"`.
+
 - method:
 
   Ignored for Typst; retained for API symmetry with

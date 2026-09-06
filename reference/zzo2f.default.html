@@ -129,13 +129,35 @@
 <dd><p>PNG resolution.</p></dd>
 
 
+<dt id="arg-separator-row">separator_row<a class="anchor" aria-label="anchor" href="#arg-separator-row"></a></dt>
+<dd><p>Integer vector or NULL. 1-based data rows above
+which a horizontal separator line is drawn.</p></dd>
+
+
+<dt id="arg-formats">formats<a class="anchor" aria-label="anchor" href="#arg-formats"></a></dt>
+<dd><p>A single <code>zzo2f_format</code>, a list of them, or NULL.
+Column formatting specifications.</p></dd>
+
+
+<dt id="arg-collapse-rows">collapse_rows<a class="anchor" aria-label="anchor" href="#arg-collapse-rows"></a></dt>
+<dd><p>A o2f_collapse object or NULL, for multi-row
+cells.</p></dd>
+
+
+<dt id="arg-compile">compile<a class="anchor" aria-label="anchor" href="#arg-compile"></a></dt>
+<dd><p>Logical. Compile the generated Typst source to the
+output format. When FALSE, the Typst source is returned instead of
+a file path. Default TRUE.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Additional arguments passed to tinytable::tt().</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Invisibly returns the path to the output file.</p>
+    <p>Invisibly returns the path to the output file, or the Typst
+source when <code>compile = FALSE</code>.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

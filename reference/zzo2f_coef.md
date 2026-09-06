@@ -29,6 +29,10 @@ zzo2f_coef(
 
   A fitted model (`lm`, `glm`, or any object with a `zzo2f` S3 method).
 
+- width:
+
+  Character. Typst-compatible width (e.g. `"3in"`, `"80%"`).
+
 - align:
 
   One of `"center"`, `"left"`, `"right"`.

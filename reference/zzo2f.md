@@ -24,58 +24,11 @@ zzo2f(x, ...)
 
 - ...:
 
-  Additional arguments passed to
+  Arguments passed to the method, and onward to
   [`tinytable::tt()`](https://vincentarelbundock.github.io/tinytable/man/tt.html).
-
-- filename:
-
-  Character string. Base name for output file (without extension).
-  Defaults to the deparsed name of `x`.
-
-- sub_dir:
-
-  Character string. Output directory. Defaults to "analysis/figures" in
-  zzcollab projects, "figures" otherwise.
-
-- verbose:
-
-  Logical. Print progress messages. Default FALSE.
-
-- caption:
-
-  Character string or NULL. Table caption.
-
-- align:
-
-  Character vector or NULL. Column alignments ("l", "c", "r"). Length 1
-  (applied to all columns) or one per column. NULL for auto-detect.
-
-- theme:
-
-  Character string, o2f_theme object, or NULL. Theme name (e.g., "nejm",
-  "apa") or custom theme. Uses the existing o2f theme system.
-
-- scolor:
-
-  Character string or NULL. LaTeX color spec for row striping,
-  translated to hex. Overrides theme setting.
-
-- footnote:
-
-  A o2f_footnote object or NULL. Table footnotes.
-
-- header_above:
-
-  A o2f_header object, list of o2f_header objects, or NULL. Spanning
-  column headers.
-
-- format:
-
-  Character string. Output format: "pdf" (default), "png", or "svg".
-
-- dpi:
-
-  Integer. PNG resolution in dots per inch. Default 300.
+  See
+  [`zzo2f.default()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f.default.md)
+  for the full set accepted by the data frame method.
 
 ## Value
 

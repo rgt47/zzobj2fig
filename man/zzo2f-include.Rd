@@ -10,5 +10,19 @@ document. Parallel in purpose to the \verb{o2f_include*} family but
 using Typst primitives (\verb{#figure}, \verb{#image}, \verb{#grid}, \verb{#place}).
 }
 \details{
-
+Three semantic gaps between the LaTeX and Typst inclusion models
+are flagged here:
+\itemize{
+\item \code{wrapfigure} (text wrapping around a figure) has no
+direct Typst equivalent. \code{zzo2f_include_wrap()} emits a
+\code{#place(..., float: true)} approximation; text does not
+literally wrap.
+\item \code{marginfigure} / \code{\\marginpar} are approximated
+via \code{#place(right, dx: 100\%, ...)}. This works inside a
+\code{#set page(margin: (right: ...))} block; users must
+arrange the page layout themselves.
+\item LaTeX float placement specifiers (\code{htbp}) have no
+clean Typst analog. The \code{position} argument is accepted
+for API symmetry but ignored.
+}
 }

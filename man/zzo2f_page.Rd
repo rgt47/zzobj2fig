@@ -17,7 +17,7 @@ zzo2f_page(
 (\code{"2cm"}) or a named list like
 \code{list(x = "2cm", y = "1.5cm")} for horizontal / vertical
 margins, or \code{list(top = ..., bottom = ..., left = ...,
-  right = ...)} for a full specification.}
+right = ...)} for a full specification.}
 
 \item{paper}{Character or NULL. Typst paper code (e.g.
 \code{"a4"}, \code{"us-letter"}).}

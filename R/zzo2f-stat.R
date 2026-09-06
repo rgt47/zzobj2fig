@@ -58,7 +58,7 @@ zzo2f_tidy <- function(x, tidy_args = list(),
 #' @param model A fitted model (\code{lm}, \code{glm}, or any object
 #'   with a \code{zzo2f} S3 method).
 #' @param width Character. Typst-compatible width (e.g.
-#'   \code{"3in"}, \code{"80%"}).
+#'   \code{"3in"}, \code{"80\%"}).
 #' @param align One of \code{"center"}, \code{"left"},
 #'   \code{"right"}.
 #' @param digits Decimal places.

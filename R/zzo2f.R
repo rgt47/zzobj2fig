@@ -15,25 +15,9 @@ NULL
 #'   cropping step is needed.
 #'
 #' @param x A data frame, matrix, or table object to render.
-#' @param filename Character string. Base name for output file (without
-#'   extension). Defaults to the deparsed name of \code{x}.
-#' @param sub_dir Character string. Output directory. Defaults to
-#'   "analysis/figures" in zzcollab projects, "figures" otherwise.
-#' @param verbose Logical. Print progress messages. Default FALSE.
-#' @param caption Character string or NULL. Table caption.
-#' @param align Character vector or NULL. Column alignments ("l", "c", "r").
-#'   Length 1 (applied to all columns) or one per column. NULL for auto-detect.
-#' @param theme Character string, o2f_theme object, or NULL. Theme name
-#'   (e.g., "nejm", "apa") or custom theme. Uses the existing o2f theme system.
-#' @param scolor Character string or NULL. LaTeX color spec for row striping,
-#'   translated to hex. Overrides theme setting.
-#' @param footnote A o2f_footnote object or NULL. Table footnotes.
-#' @param header_above A o2f_header object, list of o2f_header objects, or
-#'   NULL. Spanning column headers.
-#' @param format Character string. Output format: "pdf" (default), "png",
-#'   or "svg".
-#' @param dpi Integer. PNG resolution in dots per inch. Default 300.
-#' @param ... Additional arguments passed to \code{tinytable::tt()}.
+#' @param ... Arguments passed to the method, and onward to
+#'   \code{tinytable::tt()}. See [zzo2f.default()] for the full set
+#'   accepted by the data frame method.
 #'
 #' @return Invisibly returns the path to the output file.
 #'
@@ -79,9 +63,19 @@ zzo2f <- function(x, ...) {
 #' @param header_above A o2f_header object.
 #' @param format Output format: "pdf", "png", or "svg".
 #' @param dpi PNG resolution.
+#' @param separator_row Integer vector or NULL. 1-based data rows above
+#'   which a horizontal separator line is drawn.
+#' @param formats A single \code{zzo2f_format}, a list of them, or NULL.
+#'   Column formatting specifications.
+#' @param collapse_rows A o2f_collapse object or NULL, for multi-row
+#'   cells.
+#' @param compile Logical. Compile the generated Typst source to the
+#'   output format. When FALSE, the Typst source is returned instead of
+#'   a file path. Default TRUE.
 #' @param ... Additional arguments passed to tinytable::tt().
 #'
-#' @return Invisibly returns the path to the output file.
+#' @return Invisibly returns the path to the output file, or the Typst
+#'   source when \code{compile = FALSE}.
 #' @export
 zzo2f.default <- function(x,
                           filename = NULL,
@@ -329,6 +323,11 @@ zzo2f.htest <- function(x, digits = 3, ...) {
 #' @param se_in_parens Show standard errors in parentheses.
 #' @param filename Base name for output files.
 #' @param sub_dir Output directory.
+#' @param format Character string. Output format: "pdf" (default),
+#'   "png", or "svg".
+#' @param theme Character string, o2f_theme object, or NULL. Theme name
+#'   (e.g., "nejm", "apa") or custom theme.
+#' @param caption Character string or NULL. Table caption.
 #' @param zzo2f_args List of additional arguments passed to zzo2f().
 #'
 #' @return Invisibly returns the path to the output file.

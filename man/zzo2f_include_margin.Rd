@@ -23,6 +23,10 @@ zzo2f_include_margin(
 
 \item{width}{Width spec.}
 
+\item{offset}{Character. Typst length for horizontal offset; use
+\code{"100\%"} to push into a reserved right margin. Default
+\code{"100\%"}.}
+
 \item{method}{Ignored for Typst; retained for API symmetry with
 \code{o2f_include_margin()}.}
 

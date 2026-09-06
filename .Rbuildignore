@@ -5,6 +5,7 @@
 # License files (separate from DESCRIPTION License field)
 ^LICENSE\.md$
 ^CODE_OF_CONDUCT\.md$
+^CONTRIBUTING\.md$
 
 # GitHub
 ^\.github$
@@ -19,6 +20,11 @@
 
 # zzcollab
 ^\.zzcollab$
+^\.zzcollab-state$
+^zzcollab\.yaml$
+^tooling\.lock$
+^\.graphics$
+^_pkgdown\.yml$
 ^Dockerfile$
 ^Makefile$
 ^docs$

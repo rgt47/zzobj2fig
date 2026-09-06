@@ -58,10 +58,24 @@
 
 \item{dpi}{PNG resolution.}
 
+\item{separator_row}{Integer vector or NULL. 1-based data rows above
+which a horizontal separator line is drawn.}
+
+\item{formats}{A single \code{zzo2f_format}, a list of them, or NULL.
+Column formatting specifications.}
+
+\item{collapse_rows}{A o2f_collapse object or NULL, for multi-row
+cells.}
+
+\item{compile}{Logical. Compile the generated Typst source to the
+output format. When FALSE, the Typst source is returned instead of
+a file path. Default TRUE.}
+
 \item{...}{Additional arguments passed to tinytable::tt().}
 }
 \value{
-Invisibly returns the path to the output file.
+Invisibly returns the path to the output file, or the Typst
+source when \code{compile = FALSE}.
 }
 \description{
 Default method for zzo2f (data frames)

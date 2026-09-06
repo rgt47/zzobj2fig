@@ -9,36 +9,9 @@ zzo2f(x, ...)
 \arguments{
 \item{x}{A data frame, matrix, or table object to render.}
 
-\item{...}{Additional arguments passed to \code{tinytable::tt()}.}
-
-\item{filename}{Character string. Base name for output file (without
-extension). Defaults to the deparsed name of \code{x}.}
-
-\item{sub_dir}{Character string. Output directory. Defaults to
-"analysis/figures" in zzcollab projects, "figures" otherwise.}
-
-\item{verbose}{Logical. Print progress messages. Default FALSE.}
-
-\item{caption}{Character string or NULL. Table caption.}
-
-\item{align}{Character vector or NULL. Column alignments ("l", "c", "r").
-Length 1 (applied to all columns) or one per column. NULL for auto-detect.}
-
-\item{theme}{Character string, o2f_theme object, or NULL. Theme name
-(e.g., "nejm", "apa") or custom theme. Uses the existing o2f theme system.}
-
-\item{scolor}{Character string or NULL. LaTeX color spec for row striping,
-translated to hex. Overrides theme setting.}
-
-\item{footnote}{A o2f_footnote object or NULL. Table footnotes.}
-
-\item{header_above}{A o2f_header object, list of o2f_header objects, or
-NULL. Spanning column headers.}
-
-\item{format}{Character string. Output format: "pdf" (default), "png",
-or "svg".}
-
-\item{dpi}{Integer. PNG resolution in dots per inch. Default 300.}
+\item{...}{Arguments passed to the method, and onward to
+\code{tinytable::tt()}. See \code{\link[=zzo2f.default]{zzo2f.default()}} for the full set
+accepted by the data frame method.}
 }
 \value{
 Invisibly returns the path to the output file.

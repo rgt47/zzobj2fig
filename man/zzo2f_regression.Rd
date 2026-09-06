@@ -33,6 +33,14 @@ zzo2f_regression(
 
 \item{sub_dir}{Output directory.}
 
+\item{format}{Character string. Output format: "pdf" (default),
+"png", or "svg".}
+
+\item{theme}{Character string, o2f_theme object, or NULL. Theme name
+(e.g., "nejm", "apa") or custom theme.}
+
+\item{caption}{Character string or NULL. Table caption.}
+
 \item{zzo2f_args}{List of additional arguments passed to zzo2f().}
 }
 \value{

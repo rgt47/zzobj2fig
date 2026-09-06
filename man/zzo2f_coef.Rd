@@ -19,6 +19,9 @@ zzo2f_coef(
 \item{model}{A fitted model (\code{lm}, \code{glm}, or any object
 with a \code{zzo2f} S3 method).}
 
+\item{width}{Character. Typst-compatible width (e.g.
+\code{"3in"}, \code{"80\%"}).}
+
 \item{align}{One of \code{"center"}, \code{"left"},
 \code{"right"}.}
 

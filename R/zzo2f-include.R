@@ -13,7 +13,7 @@
 #'     \code{#place(..., float: true)} approximation; text does not
 #'     literally wrap.
 #'   \item \code{marginfigure} / \code{\\marginpar} are approximated
-#'     via \code{#place(right, dx: 100%, ...)}. This works inside a
+#'     via \code{#place(right, dx: 100\%, ...)}. This works inside a
 #'     \code{#set page(margin: (right: ...))} block; users must
 #'     arrange the page layout themselves.
 #'   \item LaTeX float placement specifiers (\code{htbp}) have no
@@ -41,7 +41,7 @@ resolve_typst_path <- function(path) {
 #'
 #' @param width Character. A LaTeX-style width such as
 #'   \code{"\\textwidth"}, \code{"0.8\\textwidth"}, or a plain Typst
-#'   width like \code{"80%"} or \code{"5cm"}.
+#'   width like \code{"80\%"} or \code{"5cm"}.
 #' @return Character. A Typst width expression.
 #' @keywords internal
 translate_width <- function(width) {
@@ -261,8 +261,8 @@ zzo2f_include_sidebyside <- function(path1, path2,
 #' @param label Character or NULL.
 #' @param width Width spec.
 #' @param offset Character. Typst length for horizontal offset; use
-#'   \code{"100%"} to push into a reserved right margin. Default
-#'   \code{"100%"}.
+#'   \code{"100\%"} to push into a reserved right margin. Default
+#'   \code{"100\%"}.
 #' @param method Ignored for Typst; retained for API symmetry with
 #'   \code{o2f_include_margin()}.
 #' @param cat Logical.

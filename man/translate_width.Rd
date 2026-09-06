@@ -6,6 +6,11 @@
 \usage{
 translate_width(width)
 }
+\arguments{
+\item{width}{Character. A LaTeX-style width such as
+\code{"\\textwidth"}, \code{"0.8\\textwidth"}, or a plain Typst
+width like \code{"80\%"} or \code{"5cm"}.}
+}
 \value{
 Character. A Typst width expression.
 }

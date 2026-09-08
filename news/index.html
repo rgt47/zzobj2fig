@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">zzobj2fig</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,10 +40,30 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0" id="zzobj2fig-040">zzobj2fig 0.4.0<a class="anchor" aria-label="anchor" href="#zzobj2fig-040"></a></h2>
+<div class="section level3">
+<h3 id="correctness-fixes-0-4-0">Correctness fixes<a class="anchor" aria-label="anchor" href="#correctness-fixes-0-4-0"></a></h3>
+<ul><li>
+<p><strong>Table cells now escape every character LaTeX treats specially.</strong> <code><a href="../reference/sanitize_table_cells.html">sanitize_table_cells()</a></code> handled <code>#</code>, <code>%</code>, <code>&amp;</code> and <code>$</code>, which left out the commonest of them all. An underscore is a subscript in text mode, so an ordinary cell such as <code>age_years</code> or <code>SUBJ_001</code> stopped the compile with “Missing $ inserted”; <code>^</code> failed the same way, <code>~</code> rendered silently as a non-breaking space, and an unmatched brace broke grouping. A single table row containing <code>age_years</code>, <code>x^2</code> and <code>a~b</code> produced eight LaTeX errors. With the fix that row produces none, confirmed by compiling both under <code>pdflatex</code>.</p>
+<p><code>_</code>, <code>^</code>, <code>~</code>, <code>{</code>, <code>}</code> and <code>\</code> are now escaped alongside the original four. The substitution is applied character by character in one pass, because a backslash is rewritten to a form containing braces and a second pass over <code>{</code> would mangle it.</p>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="known-limitation-now-recorded-in-the-tests-0-4-0">Known limitation, now recorded in the tests<a class="anchor" aria-label="anchor" href="#known-limitation-now-recorded-in-the-tests-0-4-0"></a></h3>
+<ul><li>A cell containing a backslash followed by a letter is exempted from escaping entirely, so that author-supplied LaTeX markup passes through. The exemption is decided per cell, on the strength of one such sequence anywhere in it, so a cell that merely looks like markup keeps every other special character raw, and a raw <code>%</code> comments out the rest of the row. This is the existing documented behaviour and is unchanged; a test now pins it, so that altering it is a deliberate act rather than an accident.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="tests-0-4-0">Tests<a class="anchor" aria-label="anchor" href="#tests-0-4-0"></a></h3>
+<ul><li>New <code>test-latex-escaping.R</code> covers each special character, the one-pass property, vectorisation, <code>NA</code> handling, numeric coercion, and the markup exemption above.</li>
+<li>Suite grows from 408 assertions to 424.</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="zzobj2fig-v030">zzobj2fig v0.3.0<a class="anchor" aria-label="anchor" href="#zzobj2fig-v030"></a></h2>
 <ul><li>Initial public release.</li>
 </ul></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

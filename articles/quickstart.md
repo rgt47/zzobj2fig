@@ -15,7 +15,7 @@ Features” vignettes.
 ``` r
 
 library(zzobj2fig)
-#> zzobj2fig 0.3.0 - LaTeX table generation for R
+#> zzobj2fig 0.4.0 - LaTeX table generation for R
 ```
 
 ## Basic Usage

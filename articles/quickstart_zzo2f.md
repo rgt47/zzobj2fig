@@ -30,7 +30,7 @@ install.packages("tinytable")
 ``` r
 
 library(zzobj2fig)
-#> zzobj2fig 0.3.0 - LaTeX table generation for R
+#> zzobj2fig 0.4.0 - LaTeX table generation for R
 ```
 
 Verify that both dependencies are available:

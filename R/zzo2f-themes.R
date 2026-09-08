@@ -63,7 +63,7 @@ translate_latex_color <- function(color) {
     blue    = "#0000FF",
     green   = "#00FF00",
     gray    = "#808080",
-    grey    = "#808080",
+    gray    = "#808080",
     black   = "#000000",
     cyan    = "#00FFFF",
     magenta = "#FF00FF",

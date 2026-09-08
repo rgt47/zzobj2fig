@@ -329,14 +329,43 @@ sanitize_table_cells <- function(cells) {
   # by a letter), as these are intentional LaTeX markup (e.g., footnote markers)
   needs_escape <- !grepl("\\\\[a-zA-Z]", cells)
 
-  # Only escape special characters in cells that need it
+  # Every character LaTeX treats specially in text mode. Only # % & $
+  # were handled before, which left the commonest of them all
+  # unescaped: an underscore, as in `age_years` or `SUBJ_001`, is a
+  # subscript in text mode and stops the compile with "Missing $
+  # inserted". `^` fails the same way, `~` renders silently as a
+  # non-breaking space, and an unmatched brace breaks grouping.
+  #
+  # Applied character by character in one pass, so that a replacement
+  # cannot be re-escaped by a later rule: `\` is rewritten to a form
+  # containing braces, which a second pass over `{` would then mangle.
+  latex_special <- c(
+    "\\" = "\\textbackslash{}",
+    "&" = "\\&", "%" = "\\%", "$" = "\\$", "#" = "\\#",
+    "_" = "\\_", "{" = "\\{", "}" = "\\}",
+    "~" = "\\textasciitilde{}", "^" = "\\textasciicircum{}",
+    # < and > are escaped to prevent T1 encoding ligatures
+    "<" = "\\textless{}", ">" = "\\textgreater{}"
+  )
+  escape_one <- function(x) {
+    if (is.na(x)) return(x)
+    ch <- strsplit(x, "", fixed = TRUE)[[1]]
+    hit <- match(ch, names(latex_special))
+    ch[!is.na(hit)] <- unname(latex_special[hit[!is.na(hit)]])
+    paste(ch, collapse = "")
+  }
+
   result <- cells
-  result[needs_escape] <- gsub("([#%&$])", "\\\\\\1", cells[needs_escape])
+  result[needs_escape] <- vapply(cells[needs_escape], escape_one,
+                                 character(1), USE.NAMES = FALSE)
 
-
-  # Escape < and > to prevent T1 encoding ligatures (¡ and ¿)
-  result <- gsub("<", "\\\\textless{}", result)
-  result <- gsub(">", "\\\\textgreater{}", result)
+  # Cells exempted above keep their author-supplied markup verbatim, so
+  # < and > in them are still converted; nothing else in them is
+  # touched, by design.
+  result[!needs_escape] <- gsub("<", "\\\\textless{}",
+                                result[!needs_escape])
+  result[!needs_escape] <- gsub(">", "\\\\textgreater{}",
+                                result[!needs_escape])
 
   result
 }

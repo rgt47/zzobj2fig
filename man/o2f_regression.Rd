@@ -21,7 +21,10 @@ o2f_regression(
 \item{include}{Character vector of statistics to include per model.}
 
 \item{stars}{Logical or numeric vector. If TRUE, use default significance
-thresholds. If numeric, specifies p-value cutoffs for stars.}
+thresholds. If numeric, specifies p-value cutoffs for stars. An
+estimate receives one star per cutoff its p-value is strictly below, so
+the default \code{c(0.05, 0.01, 0.001)} gives \code{*} p < 0.05,
+\code{**} p < 0.01, \code{***} p < 0.001. FALSE suppresses stars.}
 
 \item{digits}{Number of decimal places.}
 

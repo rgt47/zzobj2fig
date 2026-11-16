@@ -367,7 +367,9 @@ o2f.psm <- function(x, digits = 3, conf.int = TRUE, conf.level = 0.95,
 #' @param ... Named rms model objects to compare (ols, lrm, cph, etc.).
 #' @param digits Number of decimal places.
 #' @param exponentiate Logical. Exponentiate coefficients where appropriate.
-#' @param stars Logical or numeric vector for significance stars.
+#' @param stars Logical or numeric vector for significance stars. An
+#'   estimate receives one star per threshold its p-value is strictly below
+#'   (default: \code{*} p < 0.05, \code{**} p < 0.01, \code{***} p < 0.001).
 #' @param filename Base name for output files.
 #' @param sub_dir Output directory.
 #' @param o2f_args List of additional arguments passed to o2f().

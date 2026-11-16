@@ -1,3 +1,22 @@
+# zzobj2fig (development version)
+
+## Correctness fixes
+
+* **Significance stars now reflect the tightest threshold satisfied.**
+  `format_with_stars()`, which produces the stars in `o2f_regression()`,
+  `zzo2f_regression()`, `o2f_rms_compare()` and `zzo2f_rms_compare()`,
+  sorted the thresholds in decreasing
+  order and took the first one the p-value fell below. That is always
+  the loosest threshold, so every significant estimate received a
+  single star: a coefficient with p < 1e-6 was rendered `3.078*`. An
+  estimate now receives one star per threshold its p-value is strictly
+  below, so the default `c(0.05, 0.01, 0.001)` gives `*` p < 0.05,
+  `**` p < 0.01 and `***` p < 0.001, independent of the order in which
+  thresholds are supplied. A p-value exactly equal to a threshold does
+  not earn that star, and a missing p-value earns none. Tables that
+  previously showed one star for highly significant estimates will now
+  show two or three. No significance legend is generated automatically.
+
 # zzobj2fig 0.4.0
 
 ## Correctness fixes

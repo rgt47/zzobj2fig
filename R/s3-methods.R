@@ -362,7 +362,10 @@ o2f.htest <- function(x, digits = 3, ...) {
 #' @param ... Named lm or glm objects to compare.
 #' @param include Character vector of statistics to include per model.
 #' @param stars Logical or numeric vector. If TRUE, use default significance
-#'   thresholds. If numeric, specifies p-value cutoffs for stars.
+#'   thresholds. If numeric, specifies p-value cutoffs for stars. An
+#'   estimate receives one star per cutoff its p-value is strictly below, so
+#'   the default \code{c(0.05, 0.01, 0.001)} gives \code{*} p < 0.05,
+#'   \code{**} p < 0.01, \code{***} p < 0.001. FALSE suppresses stars.
 #' @param digits Number of decimal places.
 #' @param se_in_parens Logical. Show standard errors in parentheses below
 #'   estimates.
@@ -455,6 +458,12 @@ o2f_regression <- function(...,
 # Helper functions
 
 #' Format estimates with significance stars
+#'
+#' @description Appends one star per threshold in \code{stars} that the
+#'   p-value falls strictly below. With the default thresholds this gives
+#'   \code{*} for p < 0.05, \code{**} for p < 0.01 and \code{***} for
+#'   p < 0.001; a p-value equal to a threshold does not earn that star.
+#'   A missing p-value produces no stars.
 #' @keywords internal
 format_with_stars <- function(estimates, pvals, stars, digits) {
   if (isFALSE(stars)) {
@@ -465,15 +474,13 @@ format_with_stars <- function(estimates, pvals, stars, digits) {
     stars <- c(0.05, 0.01, 0.001)
   }
 
-  stars <- sort(stars, decreasing = TRUE)
-  star_chars <- c("*", "**", "***")[seq_along(stars)]
-
+  # One star per threshold the p-value falls strictly below, so the
+  # tightest satisfied threshold determines the count; order is irrelevant.
   vapply(seq_along(estimates), function(i) {
     if (is.na(estimates[i])) return("")
     est_str <- as.character(round(estimates[i], digits))
     if (!is.na(pvals[i])) {
-      star_idx <- which(pvals[i] < stars)[1]
-      if (!is.na(star_idx)) est_str <- paste0(est_str, star_chars[star_idx])
+      est_str <- paste0(est_str, strrep("*", sum(pvals[i] < stars)))
     }
     est_str
   }, character(1))

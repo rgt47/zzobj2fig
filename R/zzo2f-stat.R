@@ -93,7 +93,9 @@ zzo2f_coef <- function(model,
 #' @param ... Named \code{rms} model objects.
 #' @param digits Decimal places.
 #' @param exponentiate Logical.
-#' @param stars Numeric vector of significance thresholds.
+#' @param stars Numeric vector of significance thresholds. An estimate
+#'   receives one star per threshold its p-value is strictly below (default:
+#'   \code{*} p < 0.05, \code{**} p < 0.01, \code{***} p < 0.001).
 #' @param filename Output base filename.
 #' @param sub_dir Output directory.
 #' @param zzo2f_args List of arguments forwarded to \code{zzo2f()}.

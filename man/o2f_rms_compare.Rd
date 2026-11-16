@@ -21,7 +21,9 @@ o2f_rms_compare(
 
 \item{exponentiate}{Logical. Exponentiate coefficients where appropriate.}
 
-\item{stars}{Logical or numeric vector for significance stars.}
+\item{stars}{Logical or numeric vector for significance stars. An
+estimate receives one star per threshold its p-value is strictly below
+(default: \code{*} p < 0.05, \code{**} p < 0.01, \code{***} p < 0.001).}
 
 \item{filename}{Base name for output files.}
 

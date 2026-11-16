@@ -23,7 +23,9 @@ zzo2f_regression(
 
 \item{include}{Character vector of statistics to include.}
 
-\item{stars}{Logical or numeric vector for significance thresholds.}
+\item{stars}{Logical or numeric vector for significance thresholds. An
+estimate receives one star per threshold its p-value is strictly below
+(default: \code{*} p < 0.05, \code{**} p < 0.01, \code{***} p < 0.001).}
 
 \item{digits}{Number of decimal places.}
 

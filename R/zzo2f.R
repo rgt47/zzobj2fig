@@ -318,7 +318,9 @@ zzo2f.htest <- function(x, digits = 3, ...) {
 #'
 #' @param ... Named lm or glm objects to compare.
 #' @param include Character vector of statistics to include.
-#' @param stars Logical or numeric vector for significance thresholds.
+#' @param stars Logical or numeric vector for significance thresholds. An
+#'   estimate receives one star per threshold its p-value is strictly below
+#'   (default: \code{*} p < 0.05, \code{**} p < 0.01, \code{***} p < 0.001).
 #' @param digits Number of decimal places.
 #' @param se_in_parens Show standard errors in parentheses.
 #' @param filename Base name for output files.

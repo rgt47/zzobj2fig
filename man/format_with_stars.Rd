@@ -7,6 +7,10 @@
 format_with_stars(estimates, pvals, stars, digits)
 }
 \description{
-Format estimates with significance stars
+Appends one star per threshold in \code{stars} that the
+p-value falls strictly below. With the default thresholds this gives
+\code{*} for p < 0.05, \code{**} for p < 0.01 and \code{***} for
+p < 0.001; a p-value equal to a threshold does not earn that star.
+A missing p-value produces no stars.
 }
 \keyword{internal}

@@ -98,7 +98,7 @@
 <h3 id="system-requirements">System Requirements<a class="anchor" aria-label="anchor" href="#system-requirements"></a>
 </h3>
 <ul>
-<li>R &gt;= 4.0</li>
+<li>R</li>
 <li>LaTeX distribution (TeX Live, MiKTeX, TinyTeX, or MacTeX)</li>
 <li>
 <code>pdflatex</code> and <code>pdfcrop</code> executables</li>
@@ -130,15 +130,16 @@
 <span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">cyl</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span></span>
 <span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">cyl</span> <span class="op">+</span> <span class="va">hp</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/o2f_regression.html">o2f_regression</a></span><span class="op">(</span>Model1 <span class="op">=</span> <span class="va">m1</span>, Model2 <span class="op">=</span> <span class="va">m2</span>, stars <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>Output files generated:</p>
+<p>Output files are written to <code>sub_dir</code>, which defaults to <code>figures/</code> (or <code>analysis/figures/</code> inside a zzcollab project):</p>
 <ul>
 <li>
 <code>my_table.tex</code> - LaTeX source</li>
 <li>
-<code>my_table.pdf</code> - Full PDF</li>
+<code>my_table.pdf</code> - Cropped PDF for document inclusion (an uncropped copy when <code>crop = FALSE</code>)</li>
 <li>
-<code>my_table_cropped.pdf</code> - Cropped PDF for document inclusion</li>
+<code>my_table_full.pdf</code> - Full-page PDF before cropping</li>
 </ul>
+<p><code><a href="reference/o2f_regression.html">o2f_regression()</a></code> marks each coefficient with one star per significance cutoff its p-value clears. The default cutoffs (<code>stars = c(0.05, 0.01, 0.001)</code>, also used for <code>stars = TRUE</code>) give <code>*</code> for p &lt; 0.05, <code>**</code> for p &lt; 0.01, and <code>***</code> for p &lt; 0.001.</p>
 </div>
 <div class="section level2">
 <h2 id="key-features">Key Features<a class="anchor" aria-label="anchor" href="#key-features"></a>
@@ -446,11 +447,9 @@
 <div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">make</span> r</span></code></pre></div>
 <p>This command:</p>
 <ol style="list-style-type: decimal">
-<li>Validates package dependencies before starting</li>
-<li>Launches a bash terminal with R, vim, and all tools available</li>
-<li>Mounts the project directory at <code>/home/rstudio/project</code>
-</li>
-<li>Validates dependencies again on exit (captures new packages)</li>
+<li>Starts R in the project container</li>
+<li>Mounts the project directory at <code>/home/analyst/project</code> (the <code>USERNAME</code> set in the Dockerfile)</li>
+<li>On exit, runs <code>zzrenvcheck::check_packages(auto_fix = TRUE, strict = TRUE)</code> on the host to capture new packages, then runs the cached container test target</li>
 </ol>
 <p>For RStudio Server instead of terminal:</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">make</span> rstudio</span></code></pre></div>
@@ -482,9 +481,9 @@
 <div class="section level3">
 <h3 id="available-make-targets">Available Make Targets<a class="anchor" aria-label="anchor" href="#available-make-targets"></a>
 </h3>
-<p>Run <code>make help</code> to see all available targets:</p>
+<p>Run <code>make help</code> to see all available targets. A selection:</p>
 <pre><code>Main workflow:
-  r                     - Start bash terminal (vim editing)
+  r                     - Interactive R session in the container
   rstudio               - Start RStudio Server on http://localhost:8787
 
 Docker utilities:

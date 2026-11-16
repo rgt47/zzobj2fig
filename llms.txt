@@ -39,7 +39,7 @@ R CMD INSTALL .
 
 ### System Requirements
 
-- R \>= 4.0
+- R
 - LaTeX distribution (TeX Live, MiKTeX, TinyTeX, or MacTeX)
 - `pdflatex` and `pdfcrop` executables
 - Optional: ImageMagick (for PNG output), pdf2svg (for SVG output)
@@ -74,11 +74,19 @@ m2 <- lm(mpg ~ cyl + hp, data = mtcars)
 o2f_regression(Model1 = m1, Model2 = m2, stars = TRUE)
 ```
 
-Output files generated:
+Output files are written to `sub_dir`, which defaults to `figures/` (or
+`analysis/figures/` inside a zzcollab project):
 
 - `my_table.tex` - LaTeX source
-- `my_table.pdf` - Full PDF
-- `my_table_cropped.pdf` - Cropped PDF for document inclusion
+- `my_table.pdf` - Cropped PDF for document inclusion (an uncropped copy
+  when `crop = FALSE`)
+- `my_table_full.pdf` - Full-page PDF before cropping
+
+[`o2f_regression()`](https://rgt47.github.io/zzobj2fig/reference/o2f_regression.md)
+marks each coefficient with one star per significance cutoff its p-value
+clears. The default cutoffs (`stars = c(0.05, 0.01, 0.001)`, also used
+for `stars = TRUE`) give `*` for p \< 0.05, `**` for p \< 0.01, and
+`***` for p \< 0.001.
 
 ## Key Features
 
@@ -260,10 +268,13 @@ make r
 
 This command:
 
-1.  Validates package dependencies before starting
-2.  Launches a bash terminal with R, vim, and all tools available
-3.  Mounts the project directory at `/home/rstudio/project`
-4.  Validates dependencies again on exit (captures new packages)
+1.  Starts R in the project container
+2.  Mounts the project directory at `/home/analyst/project` (the
+    `USERNAME` set in the Dockerfile)
+3.  On exit, runs
+    `zzrenvcheck::check_packages(auto_fix = TRUE, strict = TRUE)` on the
+    host to capture new packages, then runs the cached container test
+    target
 
 For RStudio Server instead of terminal:
 
@@ -303,10 +314,10 @@ On exit, `make r` automatically runs validation to update `renv.lock`.
 
 ### Available Make Targets
 
-Run `make help` to see all available targets:
+Run `make help` to see all available targets. A selection:
 
     Main workflow:
-      r                     - Start bash terminal (vim editing)
+      r                     - Interactive R session in the container
       rstudio               - Start RStudio Server on http://localhost:8787
 
     Docker utilities:

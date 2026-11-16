@@ -31,7 +31,10 @@ o2f_regression(
 - stars:
 
   Logical or numeric vector. If TRUE, use default significance
-  thresholds. If numeric, specifies p-value cutoffs for stars.
+  thresholds. If numeric, specifies p-value cutoffs for stars. An
+  estimate receives one star per cutoff its p-value is strictly below,
+  so the default `c(0.05, 0.01, 0.001)` gives `*` p \< 0.05, `**` p \<
+  0.01, `***` p \< 0.001. FALSE suppresses stars.
 
 - digits:
 

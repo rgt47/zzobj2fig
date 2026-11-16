@@ -34,7 +34,9 @@ o2f_rms_compare(
 
 - stars:
 
-  Logical or numeric vector for significance stars.
+  Logical or numeric vector for significance stars. An estimate receives
+  one star per threshold its p-value is strictly below (default: `*` p
+  \< 0.05, `**` p \< 0.01, `***` p \< 0.001).
 
 - filename:
 

@@ -75,7 +75,10 @@ regression models side-by-side.</p>
 
 <dt id="arg-stars">stars<a class="anchor" aria-label="anchor" href="#arg-stars"></a></dt>
 <dd><p>Logical or numeric vector. If TRUE, use default significance
-thresholds. If numeric, specifies p-value cutoffs for stars.</p></dd>
+thresholds. If numeric, specifies p-value cutoffs for stars. An
+estimate receives one star per cutoff its p-value is strictly below, so
+the default <code>c(0.05, 0.01, 0.001)</code> gives <code>*</code> p &lt; 0.05,
+<code>**</code> p &lt; 0.01, <code>***</code> p &lt; 0.001. FALSE suppresses stars.</p></dd>
 
 
 <dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>

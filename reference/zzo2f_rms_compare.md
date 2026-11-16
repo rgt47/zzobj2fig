@@ -32,7 +32,9 @@ zzo2f_rms_compare(
 
 - stars:
 
-  Numeric vector of significance thresholds.
+  Numeric vector of significance thresholds. An estimate receives one
+  star per threshold its p-value is strictly below (default: `*` p \<
+  0.05, `**` p \< 0.01, `***` p \< 0.001).
 
 - filename:
 

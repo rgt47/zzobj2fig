@@ -32,7 +32,9 @@ zzo2f_regression(
 
 - stars:
 
-  Logical or numeric vector for significance thresholds.
+  Logical or numeric vector for significance thresholds. An estimate
+  receives one star per threshold its p-value is strictly below
+  (default: `*` p \< 0.05, `**` p \< 0.01, `***` p \< 0.001).
 
 - digits:
 

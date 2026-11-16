@@ -24,6 +24,16 @@
   highly significant estimates will now show two or three. No
   significance legend is generated automatically.
 
+- **The color name ‘grey’ is accepted again by the Typst engine.** A
+  spelling sweep replaced the ‘grey’ entry in the internal LaTeX-to-hex
+  color table with a second ‘gray’ entry, so
+  [`zzo2f()`](https://rgt47.github.io/zzobj2fig/reference/zzo2f.md)
+  colors such as `'grey'` or `'grey!20'` triggered an “Unrecognized
+  color” or “Unknown LaTeX color” warning. The rendered color was
+  unaffected, because the fallback for unknown colors is the same gray.
+  ‘gray’ (alias ‘grey’) is now accepted without a warning, in any letter
+  case.
+
 ## zzobj2fig 0.4.0
 
 ### Correctness fixes

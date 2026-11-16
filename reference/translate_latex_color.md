@@ -13,7 +13,8 @@ translate_latex_color(color)
 
 - color:
 
-  Character string. A LaTeX color specification.
+  Character string. A LaTeX color specification. Base color names are
+  matched case-insensitively; 'gray' (alias 'grey') maps to "#808080".
 
 ## Value
 

@@ -41,7 +41,9 @@ resolve_typst_theme <- function(theme, scolor = NULL) {
 #' @description Converts LaTeX color specs (e.g., "blue!10", "nejmshade",
 #'   "#FF0000") to hex color strings suitable for Typst/tinytable.
 #'
-#' @param color Character string. A LaTeX color specification.
+#' @param color Character string. A LaTeX color specification. Base color
+#'   names are matched case-insensitively; 'gray' (alias 'grey') maps to
+#'   "#808080".
 #' @return Character string with hex color (e.g., "#E6E6FF").
 #' @keywords internal
 translate_latex_color <- function(color) {
@@ -63,7 +65,9 @@ translate_latex_color <- function(color) {
     blue    = "#0000FF",
     green   = "#00FF00",
     gray    = "#808080",
-    gray    = "#808080",
+    # 'grey' is a user-typed input alias (as in R and CSS color names),
+    # not prose, so it must stay exempt from US-spelling sweeps.
+    grey    = "#808080",
     black   = "#000000",
     cyan    = "#00FFFF",
     magenta = "#FF00FF",

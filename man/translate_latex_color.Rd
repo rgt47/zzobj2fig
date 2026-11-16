@@ -7,7 +7,9 @@
 translate_latex_color(color)
 }
 \arguments{
-\item{color}{Character string. A LaTeX color specification.}
+\item{color}{Character string. A LaTeX color specification. Base color
+names are matched case-insensitively; 'gray' (alias 'grey') maps to
+"#808080".}
 }
 \value{
 Character string with hex color (e.g., "#E6E6FF").
